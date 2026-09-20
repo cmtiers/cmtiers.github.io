@@ -43,7 +43,6 @@
       line-height: 1.5;
     }
 
-    /* Background Canvas */
     #bg-canvas {
       position: fixed;
       top: 0;
@@ -55,7 +54,6 @@
       pointer-events: none;
     }
 
-    /* Notification Banner */
     .toast-banner {
       position: fixed;
       top: -60px;
@@ -76,7 +74,6 @@
       top: 20px;
     }
 
-    /* Top Navigation Bar */
     .navbar {
       display: flex;
       align-items: center;
@@ -112,7 +109,6 @@
       transform: scale(1.1);
     }
 
-    /* Side Drawer */
     .drawer {
       position: fixed;
       top: 0;
@@ -198,14 +194,12 @@
       display: block;
     }
 
-    /* Main Container */
     .container {
       padding: 20px 16px;
       max-width: 750px;
       margin: 0 auto;
     }
 
-    /* Rules Card */
     .info-card {
       background: rgba(20, 24, 34, 0.85);
       backdrop-filter: blur(10px);
@@ -254,7 +248,6 @@
       color: var(--text-main);
     }
 
-    /* Player Cards */
     .player-card {
       background: var(--card-bg);
       backdrop-filter: blur(8px);
@@ -299,6 +292,7 @@
       background: #222938;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       image-rendering: pixelated;
+      object-fit: cover;
     }
 
     .player-name {
@@ -317,7 +311,6 @@
       font-weight: 700;
     }
 
-    /* Player Tag Container */
     .player-tags {
       display: flex;
       align-items: center;
@@ -357,7 +350,6 @@
       color: #50c878;
     }
 
-    /* Ore Badges */
     .tier-section-title {
       font-size: 0.75rem;
       color: var(--text-muted);
@@ -392,7 +384,6 @@
     .ore-redstone  { background: rgba(255, 42, 42, 0.15); color: var(--ore-redstone); border: 1px solid var(--ore-redstone); box-shadow: 0 0 10px rgba(255, 42, 42, 0.25); }
     .ore-coal      { background: rgba(85, 85, 85, 0.2); color: #bbb; border: 1px solid var(--ore-coal); }
 
-    /* Footer */
     .footer {
       text-align: center;
       padding: 30px 15px 15px;
@@ -416,19 +407,15 @@
 </head>
 <body id="top">
 
-  <!-- Canvas Background -->
   <canvas id="bg-canvas"></canvas>
 
-  <!-- Notification Banner -->
   <div class="toast-banner" id="toast">Downloads Coming Soon...</div>
 
-  <!-- Top Navigation -->
   <div class="navbar">
     <div class="brand">CMTIERS</div>
     <button class="menu-btn" onclick="toggleMenu()">☰</button>
   </div>
 
-  <!-- Side Navigation Drawer -->
   <div class="drawer" id="drawer">
     <div class="drawer-header">
       <h3>Navigation</h3>
@@ -446,7 +433,6 @@
 
   <div class="container">
 
-    <!-- Ranking Guide Card -->
     <div class="info-card">
       <div class="info-title">📜 How Ranking Up Works</div>
       <div class="info-desc">
@@ -466,7 +452,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#1</div>
-          <img class="avatar" src="https://crafatar.com/avatars/b0dff46949481af6?size=128&overlay" alt="Frxnce">
+          <img class="avatar" src="images/1.png" alt="Frxnce">
           <div>
             <div class="player-name">Frxnce</div>
             <div class="points-info"><span>2,000 pts</span> • Max Rank</div>
@@ -488,7 +474,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#2</div>
-          <img class="avatar" src="https://crafatar.com/avatars/4e82f7fcfc193f49?size=128&overlay" alt="JustinGqng">
+          <img class="avatar" src="images/2.png" alt="JustinGqng">
           <div>
             <div class="player-name">JustinGqng</div>
             <div class="points-info"><span>1,850 pts</span> • Next Rank: +150 pts</div>
@@ -510,7 +496,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#3</div>
-          <img class="avatar" src="https://crafatar.com/avatars/4fa3828047074420?size=128&overlay" alt="RealSTON">
+          <img class="avatar" src="images/3.png" alt="RealSTON">
           <div>
             <div class="player-name">RealSTON</div>
             <div class="points-info"><span>1,720 pts</span> • Next Rank: +130 pts</div>
@@ -532,7 +518,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#4</div>
-          <img class="avatar" src="https://crafatar.com/avatars/152ab0715c933981?size=128&overlay" alt="GameSpilt">
+          <img class="avatar" src="images/4.png" alt="GameSpilt">
           <div>
             <div class="player-name">GameSpilt</div>
             <div class="points-info"><span>1,600 pts</span> • Next Rank: +120 pts</div>
@@ -554,7 +540,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#5</div>
-          <img class="avatar" src="https://crafatar.com/avatars/152ab0715c933981?size=128&overlay" alt="RedShidou">
+          <img class="avatar" src="images/5.png" alt="RedShidou">
           <div>
             <div class="player-name">RedShidou</div>
             <div class="points-info"><span>1,510 pts</span> • Next Rank: +90 pts</div>
@@ -576,7 +562,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#6</div>
-          <img class="avatar" src="https://crafatar.com/avatars/a4903d98afa7d9ac?size=128&overlay" alt="VexBeServin">
+          <img class="avatar" src="images/6.png" alt="VexBeServin">
           <div>
             <div class="player-name">VexBeServin</div>
             <div class="points-info"><span>1,430 pts</span> • Next Rank: +80 pts</div>
@@ -598,7 +584,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#7</div>
-          <img class="avatar" src="https://crafatar.com/avatars/a527a07ff39aba12?size=128&overlay" alt="Foxeey">
+          <img class="avatar" src="images/7.png" alt="Foxeey">
           <div>
             <div class="player-name">Foxeey</div>
             <div class="points-info"><span>1,350 pts</span> • Next Rank: +80 pts</div>
@@ -620,7 +606,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#8</div>
-          <img class="avatar" src="https://crafatar.com/avatars/8929e2920d9ef1f9?size=128&overlay" alt="zLerx">
+          <img class="avatar" src="images/8.png" alt="zLerx">
           <div>
             <div class="player-name">zLerx</div>
             <div class="points-info"><span>1,280 pts</span> • Next Rank: +70 pts</div>
@@ -642,7 +628,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#9</div>
-          <img class="avatar" src="https://crafatar.com/avatars/fa4aca5bf3c4c7b2?size=128&overlay" alt="MR_COMMUNIST">
+          <img class="avatar" src="images/9.png" alt="MR_COMMUNIST">
           <div>
             <div class="player-name">MR_COMMUNIST</div>
             <div class="points-info"><span>1,210 pts</span> • Next Rank: +70 pts</div>
@@ -664,7 +650,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#10</div>
-          <img class="avatar" src="https://crafatar.com/avatars/721f8cbd9cfdde76?size=128&overlay" alt="Omxr">
+          <img class="avatar" src="images/10.png" alt="Omxr">
           <div>
             <div class="player-name">Omxr</div>
             <div class="points-info"><span>1,150 pts</span> • Next Rank: +60 pts</div>
@@ -686,7 +672,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#11</div>
-          <img class="avatar" src="https://crafatar.com/avatars/fecb457a830e267e?size=128&overlay" alt="CheaterSlxrn">
+          <img class="avatar" src="images/11.png" alt="CheaterSlxrn">
           <div>
             <div class="player-name">CheaterSlxrn</div>
             <div class="points-info"><span>1,090 pts</span> • Next Rank: +60 pts</div>
@@ -708,7 +694,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#12</div>
-          <img class="avatar" src="https://crafatar.com/avatars/9ff461ce013d410e?size=128&overlay" alt="TrashBinHitler">
+          <img class="avatar" src="images/12.png" alt="TrashBinHitler">
           <div>
             <div class="player-name">TrashBinHitler</div>
             <div class="points-info"><span>1,030 pts</span> • Next Rank: +60 pts</div>
@@ -730,7 +716,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#13</div>
-          <img class="avatar" src="https://crafatar.com/avatars/29371fc3670a270c?size=128&overlay" alt="TrashBinLaden">
+          <img class="avatar" src="images/13.png" alt="TrashBinLaden">
           <div>
             <div class="player-name">TrashBinLaden</div>
             <div class="points-info"><span>980 pts</span> • Next Rank: +50 pts</div>
@@ -752,7 +738,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#14</div>
-          <img class="avatar" src="https://crafatar.com/avatars/eabe840c2535157c?size=128&overlay" alt="Rogg">
+          <img class="avatar" src="images/14.png" alt="Rogg">
           <div>
             <div class="player-name">Rogg</div>
             <div class="points-info"><span>930 pts</span> • Next Rank: +50 pts</div>
@@ -774,7 +760,7 @@
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#15</div>
-          <img class="avatar" src="https://crafatar.com/avatars/d3abf14ce14a3b44?size=128&overlay" alt="White">
+          <img class="avatar" src="images/15.png" alt="White">
           <div>
             <div class="player-name">White</div>
             <div class="points-info"><span>880 pts</span> • Next Rank: +50 pts</div>
@@ -793,14 +779,12 @@
 
   </div>
 
-  <!-- Footer -->
   <div class="footer">
     <p>© CMTIERS. All rights reserved.</p>
     <p>Not affiliated with Mojang Studios.</p>
   </div>
 
   <script>
-    // Canvas Cyber Background Animation
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -858,7 +842,6 @@
     }
     animate();
 
-    // Menu Controls
     function toggleMenu() {
       document.getElementById('drawer').classList.toggle('open');
       document.getElementById('overlay').classList.toggle('show');
@@ -883,3 +866,4 @@
   </script>
 </body>
 </html>
+
