@@ -1,354 +1,795 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CMTIERS - MCPE 0.15.10 UHC Rankings</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMTIERS - MCPE 0.15.10 UHC Tier List</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-    
+    :root {
+      --bg-dark: #0b0e14;
+      --card-bg: #141822;
+      --card-border: #22293a;
+      --accent-gold: #ffb703;
+      --accent-blue: #5865f2;
+      --text-main: #f0f2f5;
+      --text-muted: #8e9bb0;
+
+      /* Ore Tier Colors */
+      --ore-netherite: #1a1a24;
+      --border-netherite: #705888;
+      --ore-diamond: #40e0d0;
+      --ore-emerald: #50c878;
+      --ore-gold: #ffd700;
+      --ore-iron: #c0c0c0;
+      --ore-redstone: #ff2a2a;
+      --ore-coal: #555555;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #07090e;
-      color: #e2e8f0;
-    }
-    
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0b0d14;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #1e2640;
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #313d66;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding-bottom: 30px;
+      line-height: 1.5;
     }
 
-    /* Glow Effects */
-    .glow-gold {
-      box-shadow: 0 0 30px -5px rgba(234, 179, 8, 0.25);
-    }
-    .glow-purple {
-      box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.2);
-    }
-    .glow-indigo {
-      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.2);
-    }
-
-    /* Podium Cards Gradient Overlays */
-    .podium-1 {
-      border-color: #eab308;
-      background: linear-gradient(180deg, rgba(234, 179, 8, 0.12) 0%, rgba(13, 17, 26, 0.95) 100%);
-    }
-    .podium-2 {
-      border-color: #94a3b8;
-      background: linear-gradient(180deg, rgba(148, 163, 184, 0.1) 0%, rgba(13, 17, 26, 0.95) 100%);
-    }
-    .podium-3 {
-      border-color: #d97706;
-      background: linear-gradient(180deg, rgba(217, 119, 6, 0.1) 0%, rgba(13, 17, 26, 0.95) 100%);
+    /* Notification Banner */
+    .toast-banner {
+      position: fixed;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--accent-gold), #ff8800);
+      color: #000;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 25px rgba(255, 183, 3, 0.4);
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 300;
     }
 
-    /* Pixelated Skin Rendering */
-    .mc-skin {
-      image-rendering: pixelated;
+    .toast-banner.show {
+      top: 20px;
     }
-  </style>
 
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              bg: '#07090e',
-              card: '#0d111a',
-              cardBorder: '#182032',
-              hover: '#141b2a',
-              accent: '#6366f1'
-            }
-          }
-        }
+    /* Top Navigation Bar */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: rgba(20, 24, 34, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      font-size: 1.5rem;
+      font-weight: 900;
+      background: linear-gradient(45deg, var(--accent-gold), #ff7b00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1.5px;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 1.75rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .menu-btn:hover {
+      transform: scale(1.1);
+    }
+
+    /* Side Drawer */
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 280px;
+      height: 100%;
+      background-color: #10141d;
+      border-left: 1px solid var(--card-border);
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 200;
+      padding: 24px;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
+
+    .drawer.open {
+      right: 0;
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.6rem;
+      cursor: pointer;
+    }
+
+    .drawer-menu {
+      list-style: none;
+    }
+
+    .drawer-menu li {
+      margin-bottom: 16px;
+    }
+
+    .drawer-menu a {
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 1.05rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .drawer-menu a:hover {
+      border-color: var(--accent-gold);
+      transform: translateX(-3px);
+    }
+
+    .drawer-menu a.discord-link {
+      background: linear-gradient(135deg, #5865f2, #4752c4);
+      color: #fff;
+      font-weight: 700;
+      border: none;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      z-index: 150;
+    }
+
+    .overlay.show {
+      display: block;
+    }
+
+    /* Main Container */
+    .container {
+      padding: 20px 16px;
+      max-width: 750px;
+      margin: 0 auto;
+    }
+
+    /* Rules & Info Card */
+    .info-card {
+      background: linear-gradient(145deg, #181d2a, #111520);
+      border: 1px solid var(--accent-gold);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .info-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-desc {
+      font-size: 0.92rem;
+      color: var(--text-main);
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    .rules-box {
+      background: rgba(0,0,0,0.3);
+      border-left: 4px solid var(--accent-blue);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .rules-box span {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .tab-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    /* Player Card Desktop & Mobile Responsive Grid */
+    .player-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .player-card:hover {
+      border-color: #384561;
+      transform: translateY(-2px);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .player-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .rank-badge {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--accent-gold);
+      min-width: 35px;
+    }
+
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      background: #222938;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .player-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .points-info {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .points-info span {
+      color: var(--accent-gold);
+      font-weight: 700;
+    }
+
+    .region-tag {
+      background: rgba(255, 107, 107, 0.15);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      color: #ff6b6b;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    /* Ore Tier Badges */
+    .tier-section-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      margin-bottom: 10px;
+    }
+
+    .tiers-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .ore-badge {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .ore-netherite { background: var(--ore-netherite); color: #e2d9f3; border: 1px solid var(--border-netherite); }
+    .ore-diamond   { background: rgba(64, 224, 208, 0.15); color: var(--ore-diamond); border: 1px solid var(--ore-diamond); }
+    .ore-emerald   { background: rgba(80, 200, 120, 0.15); color: var(--ore-emerald); border: 1px solid var(--ore-emerald); }
+    .ore-gold      { background: rgba(255, 215, 0, 0.15); color: var(--ore-gold); border: 1px solid var(--ore-gold); }
+    .ore-iron      { background: rgba(192, 192, 192, 0.15); color: var(--ore-iron); border: 1px solid var(--ore-iron); }
+    .ore-redstone  { background: rgba(255, 42, 42, 0.15); color: var(--ore-redstone); border: 1px solid var(--ore-redstone); }
+    .ore-coal      { background: rgba(85, 85, 85, 0.2); color: #bbb; border: 1px solid var(--ore-coal); }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 30px 15px 15px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      margin-top: 30px;
+    }
+
+    .footer p {
+      margin-bottom: 6px;
+    }
+
+    /* Windows / Large Screen Enhancements */
+    @media (min-width: 768px) {
+      .container {
+        padding: 30px 20px;
+      }
+      .player-card {
+        padding: 22px;
+      }
+      .avatar {
+        width: 56px;
+        height: 56px;
+      }
+      .player-name {
+        font-size: 1.3rem;
       }
     }
-  </script>
+    /* --- UI ENHANCEMENT STYLES --- */
+
+/* Modern Mesh/Grid Background with Smooth Scroll */
+body {
+  background-color: #0b0e14;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(255, 183, 3, 0.08) 0%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 30px 30px, 30px 30px;
+  background-attachment: fixed;
+}
+
+/* Glassmorphism Header */
+.navbar {
+  background: rgba(15, 18, 25, 0.8) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Sleek Cards with Hover Glow */
+.player-card {
+  background: rgba(20, 24, 34, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.player-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 183, 3, 0.3);
+  box-shadow: 0 8px 25px rgba(255, 183, 3, 0.1);
+}
+
+/* Glowing Ore Badges */
+.ore-badge {
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+.ore-netherite { box-shadow: 0 0 10px rgba(112, 88, 136, 0.3); }
+.ore-diamond   { box-shadow: 0 0 10px rgba(64, 224, 208, 0.25); }
+.ore-emerald   { box-shadow: 0 0 10px rgba(80, 200, 120, 0.25); }
+.ore-gold      { box-shadow: 0 0 10px rgba(255, 215, 0, 0.25); }
+.ore-iron      { box-shadow: 0 0 10px rgba(192, 192, 192, 0.2); }
+.ore-redstone  { box-shadow: 0 0 10px rgba(255, 42, 42, 0.25); }
+
+  </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body id="top">
 
-  <!-- Header -->
-  <header class="bg-[#0b0e17]/80 backdrop-blur-md border-b border-brand-cardBorder sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
-    <!-- Brand Logo -->
-    <div class="flex items-center gap-3">
-      <div class="bg-gradient-to-tr from-indigo-600 to-violet-500 p-2.5 rounded-xl shadow-lg shadow-indigo-500/30">
-        <i data-lucide="crown" class="w-5 h-5 text-white"></i>
+  <!-- Notification Banner -->
+  <div class="toast-banner" id="toast">Downloads Coming Soon...</div>
+
+  <!-- Top Navigation -->
+  <div class="navbar">
+    <div class="brand">CMTIERS</div>
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  </div>
+
+  <!-- Side Navigation Drawer -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h3>Navigation</h3>
+      <button class="close-btn" onclick="toggleMenu()">✕</button>
+    </div>
+    <ul class="drawer-menu">
+      <li><a onclick="navigateTo('#top')">🏠 Home</a></li>
+      <li><a onclick="navigateTo('#leaderboard')">⚔️ UHC Tier Rankings</a></li>
+      <li><a onclick="showComingSoon()">📥 Downloads</a></li>
+      <li><a href="https://discord.gg/FngWr4ZVZ" target="_blank" class="discord-link">💬 Join Discord</a></li>
+    </ul>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <div class="container">
+
+    <!-- Ranking Guide Card -->
+    <div class="info-card">
+      <div class="info-title">📜 How Ranking Up Works</div>
+      <div class="info-desc">
+        To move up the leaderboards and claim a higher rank position, you must challenge and <b>FT15 (First To 15 Wins)</b> players placed above you in PvP.
       </div>
-      <div>
-        <h1 class="font-black text-xl tracking-wider text-white">CM<span class="text-indigo-400">TIERS</span></h1>
+      <div class="rules-box">
+        <b>Example:</b> If you are ranked <span>#15</span>, you must challenge and defeat the player at <span>#14</span> in an official FT15 match to take their spot and gain points!
       </div>
     </div>
 
-    <!-- Search & Actions -->
-    <div class="flex items-center gap-3">
-      <div class="relative w-60 md:w-72">
-        <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
-        <input 
-          type="text" 
-          placeholder="Search Steve..." 
-          class="w-full bg-[#121724] border border-brand-cardBorder text-xs rounded-xl pl-9 pr-4 py-2.5 text-gray-200 placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-all"
-        />
-      </div>
-
-      <button class="p-2.5 bg-[#121724] border border-brand-cardBorder text-gray-400 hover:text-white rounded-xl transition-colors">
-        <i data-lucide="moon" class="w-4 h-4"></i>
-      </button>
-
-      <button class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2">
-        <i data-lucide="user" class="w-4 h-4"></i>
-        Login
-      </button>
+    <div class="section-header" id="leaderboard">
+      <div class="tab-title">⚔️ UHC Tier Rankings</div>
     </div>
-  </header>
 
-  <div class="flex flex-1">
-    <!-- Sidebar Navigation -->
-    <aside class="w-64 bg-[#0b0e17] border-r border-brand-cardBorder p-5 flex flex-col justify-between hidden md:flex shrink-0">
-      <div class="space-y-6">
-        <nav class="space-y-1.5">
-          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-lg shadow-indigo-600/20">
-            <i data-lucide="trophy" class="w-4 h-4"></i>
-            Rankings
-          </a>
-          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold text-gray-400 hover:bg-brand-hover hover:text-white transition-all">
-            <i data-lucide="users" class="w-4 h-4"></i>
-            Players
-          </a>
-          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold text-gray-400 hover:bg-brand-hover hover:text-white transition-all">
-            <i data-lucide="info" class="w-4 h-4"></i>
-            Info
-          </a>
-        </nav>
-
-        <!-- Version Selector Locked to 0.15.10 -->
-        <div class="bg-brand-card border border-brand-cardBorder rounded-xl p-3.5">
-          <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-2">MCPE Version</label>
-          <div class="w-full bg-[#07090e] border border-brand-cardBorder rounded-lg text-xs px-3 py-2 text-indigo-400 font-bold flex items-center justify-between">
-            <span>MCPE 0.15.10</span>
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          </div>
-        </div>
-
-        <!-- Mode Info -->
-        <div class="bg-brand-card border border-brand-cardBorder rounded-xl p-4 flex items-start gap-3">
-          <i data-lucide="shield" class="w-5 h-5 text-indigo-400 shrink-0 mt-0.5"></i>
+    <!-- Player 1 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#1</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
           <div>
-            <h4 class="text-xs font-bold text-white uppercase">UHC ONLY</h4>
-            <p class="text-[11px] text-gray-400 mt-1 leading-relaxed">Dedicated competitive leaderboard for version 0.15.10.</p>
+            <div class="player-name">Player_1</div>
+            <div class="points-info"><span>2,000 pts</span> • Max Rank</div>
           </div>
         </div>
+        <div class="region-tag">NA</div>
       </div>
-
-      <!-- Promo Box -->
-      <div class="bg-gradient-to-b from-indigo-900/30 to-brand-card border border-indigo-500/20 rounded-2xl p-4 text-center">
-        <h3 class="text-xs font-extrabold text-white mb-1">CMTIERS 0.15.10</h3>
-        <p class="text-[11px] text-gray-400 mb-3">Pure PvP skill and rankings for Minecraft PE.</p>
-        <i data-lucide="heart" class="w-4 h-4 text-indigo-400 mx-auto fill-indigo-400"></i>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-netherite">⬛ Netherite Tier</span>
       </div>
-    </aside>
+    </div>
 
-    <!-- Main Workspace -->
-    <main class="flex-1 p-6 space-y-6 overflow-x-hidden max-w-7xl mx-auto w-full">
-
-      <!-- Hero Header Banner -->
-      <div class="relative rounded-2xl overflow-hidden border border-brand-cardBorder bg-gradient-to-r from-indigo-950 via-brand-card to-purple-950/40 p-8 text-center shadow-2xl">
-        <div class="relative z-10 space-y-2">
-          <span class="text-[10px] uppercase font-bold tracking-widest bg-indigo-500/20 text-indigo-300 px-3.5 py-1 rounded-full border border-indigo-500/30">
-            Minecraft PE 0.15.10 UHC
-          </span>
-          <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight">
-            CM<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">TIERS</span>
-          </h2>
-          <p class="text-xs text-gray-400 font-medium max-w-md mx-auto">OFFICIAL 0.15.10 UHC COMPETITIVE TIER LIST</p>
-        </div>
-      </div>
-
-      <!-- Top 3 Podium (All Steves) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end pt-2">
-        <!-- #2 Steve -->
-        <div class="podium-2 border-t-2 rounded-2xl p-5 text-center space-y-3 relative order-2 md:order-1 transition-transform hover:-translate-y-1">
-          <img src="https://mc-heads.net/avatar/Steve/64" class="w-16 h-16 mx-auto rounded-xl mc-skin shadow-md border-2 border-slate-400" alt="Steve Skin" />
-          <span class="inline-block bg-slate-800 text-slate-300 text-[11px] px-2.5 py-0.5 rounded-full font-extrabold">#2</span>
-          <h3 class="text-base font-bold text-white">Steve</h3>
-          <span class="inline-block bg-purple-900/80 text-purple-200 text-[10px] px-3 py-1 rounded-full font-bold border border-purple-500/30">LORD</span>
-          <p class="text-xs text-gray-400 font-semibold">1,482 pts</p>
-        </div>
-
-        <!-- #1 Steve -->
-        <div class="podium-1 glow-gold border-t-2 rounded-2xl p-6 text-center space-y-3 relative order-1 md:order-2 md:-translate-y-3 transition-transform hover:-translate-y-4">
-          <i data-lucide="crown" class="w-6 h-6 text-yellow-400 mx-auto animate-bounce"></i>
-          <img src="https://mc-heads.net/avatar/Steve/80" class="w-20 h-20 mx-auto rounded-xl mc-skin shadow-lg border-2 border-yellow-400" alt="Steve Skin" />
-          <span class="inline-block bg-yellow-500/20 text-yellow-400 text-[11px] px-3 py-0.5 rounded-full font-extrabold border border-yellow-500/30">#1</span>
-          <h3 class="text-lg font-black text-white">Steve</h3>
-          <span class="inline-block bg-indigo-900/80 text-indigo-200 text-[10px] px-3 py-1 rounded-full font-bold border border-indigo-500/30">GOD</span>
-          <p class="text-xs text-yellow-400 font-bold">1,623 pts</p>
-        </div>
-
-        <!-- #3 Steve -->
-        <div class="podium-3 border-t-2 rounded-2xl p-5 text-center space-y-3 relative order-3 transition-transform hover:-translate-y-1">
-          <img src="https://mc-heads.net/avatar/Steve/64" class="w-16 h-16 mx-auto rounded-xl mc-skin shadow-md border-2 border-amber-600" alt="Steve Skin" />
-          <span class="inline-block bg-amber-900/40 text-amber-400 text-[11px] px-2.5 py-0.5 rounded-full font-extrabold">#3</span>
-          <h3 class="text-base font-bold text-white">Steve</h3>
-          <span class="inline-block bg-amber-900/80 text-amber-200 text-[10px] px-3 py-1 rounded-full font-bold border border-amber-500/30">LEGEND</span>
-          <p class="text-xs text-gray-400 font-semibold">1,311 pts</p>
-        </div>
-      </div>
-
-      <!-- Main Section: Leaderboard + Side Widgets -->
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-
-        <!-- Leaderboard Table -->
-        <div class="lg:col-span-3 bg-brand-card border border-brand-cardBorder rounded-2xl overflow-hidden shadow-xl">
-          <div class="p-4 border-b border-brand-cardBorder flex items-center justify-between flex-wrap gap-4">
-            <h3 class="text-sm font-extrabold text-white flex items-center gap-2">
-              <i data-lucide="crown" class="w-4 h-4 text-indigo-400"></i>
-              UHC RANKINGS
-            </h3>
-            <div class="bg-[#07090e] p-1 rounded-xl border border-brand-cardBorder flex text-xs">
-              <button class="px-4 py-1.5 rounded-lg font-bold bg-indigo-600 text-white">Overall</button>
-              <button class="px-4 py-1.5 rounded-lg font-bold text-gray-400 hover:text-white transition-colors">UHC</button>
-            </div>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-[#07090e] text-gray-400 uppercase border-b border-brand-cardBorder font-semibold">
-                <tr>
-                  <th class="py-3.5 px-4">#</th>
-                  <th class="py-3.5 px-4">Player</th>
-                  <th class="py-3.5 px-4">Tier</th>
-                  <th class="py-3.5 px-4">Points</th>
-                  <th class="py-3.5 px-4">Win Rate</th>
-                  <th class="py-3.5 px-4">W/L</th>
-                </tr>
-              </thead>
-              <tbody id="leaderboard-body" class="divide-y divide-brand-cardBorder text-gray-300">
-                <!-- Javascript populated rows -->
-              </tbody>
-            </table>
+    <!-- Player 2 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#2</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <div>
+            <div class="player-name">Player_2</div>
+            <div class="points-info"><span>1,850 pts</span> • Next Rank: +150 pts</div>
           </div>
         </div>
+        <div class="region-tag">EU</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-diamond">💎 Diamond Tier</span>
+      </div>
+    </div>
 
-        <!-- Sidebar Widgets -->
-        <div class="space-y-6">
-          <!-- Tier Ranges -->
-          <div class="bg-brand-card border border-brand-cardBorder rounded-2xl p-4 shadow-xl">
-            <h4 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-              <i data-lucide="award" class="w-4 h-4 text-yellow-500"></i>
-              Tier Ranges
-            </h4>
-            <div class="space-y-2 text-xs font-medium" id="tier-list"></div>
-          </div>
-
-          <!-- Recently Viewed -->
-          <div class="bg-brand-card border border-brand-cardBorder rounded-2xl p-4 shadow-xl">
-            <h4 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-              <i data-lucide="clock" class="w-4 h-4 text-indigo-400"></i>
-              Recently Viewed
-            </h4>
-            <div class="space-y-2" id="recently-viewed"></div>
+    <!-- Player 3 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#3</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <div>
+            <div class="player-name">Player_3</div>
+            <div class="points-info"><span>1,720 pts</span> • Next Rank: +130 pts</div>
           </div>
         </div>
-
+        <div class="region-tag">ASIA</div>
       </div>
-    </main>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-emerald">Emerald Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 4 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#4</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <div>
+            <div class="player-name">Player_4</div>
+            <div class="points-info"><span>1,600 pts</span> • Next Rank: +120 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">NA</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-gold">🪙 Gold Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 5 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#5</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <div>
+            <div class="player-name">Player_5</div>
+            <div class="points-info"><span>1,510 pts</span> • Next Rank: +90 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">EU</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-gold">🪙 Gold Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 6 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#6</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <div>
+            <div class="player-name">Player_6</div>
+            <div class="points-info"><span>1,430 pts</span> • Next Rank: +80 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">NA</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-iron">⚙️ Iron Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 7 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#7</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <div>
+            <div class="player-name">Player_7</div>
+            <div class="points-info"><span>1,350 pts</span> • Next Rank: +80 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">SA</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-iron">⚙️ Iron Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 8 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#8</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <div>
+            <div class="player-name">Player_8</div>
+            <div class="points-info"><span>1,280 pts</span> • Next Rank: +70 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">EU</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-redstone">🔴 Redstone Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 9 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#9</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <div>
+            <div class="player-name">Player_9</div>
+            <div class="points-info"><span>1,210 pts</span> • Next Rank: +70 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">ASIA</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-redstone">🔴 Redstone Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 10 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#10</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <div>
+            <div class="player-name">Player_10</div>
+            <div class="points-info"><span>1,150 pts</span> • Next Rank: +60 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">NA</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-redstone">🔴 Redstone Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 11 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#11</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <div>
+            <div class="player-name">Player_11</div>
+            <div class="points-info"><span>1,090 pts</span> • Next Rank: +60 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">EU</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-coal">⚫ Coal Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 12 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#12</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <div>
+            <div class="player-name">Player_12</div>
+            <div class="points-info"><span>1,030 pts</span> • Next Rank: +60 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">NA</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-coal">⚫ Coal Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 13 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#13</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <div>
+            <div class="player-name">Player_13</div>
+            <div class="points-info"><span>980 pts</span> • Next Rank: +50 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">SA</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-coal">⚫ Coal Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 14 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#14</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <div>
+            <div class="player-name">Player_14</div>
+            <div class="points-info"><span>930 pts</span> • Next Rank: +50 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">EU</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-coal">⚫ Coal Tier</span>
+      </div>
+    </div>
+
+    <!-- Player 15 -->
+    <div class="player-card">
+      <div class="card-top">
+        <div class="player-meta">
+          <div class="rank-badge">#15</div>
+          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <div>
+            <div class="player-name">Player_15</div>
+            <div class="points-info"><span>880 pts</span> • Next Rank: +50 pts</div>
+          </div>
+        </div>
+        <div class="region-tag">ASIA</div>
+      </div>
+      <div class="tier-section-title">CURRENT TIER</div>
+      <div class="tiers-grid">
+        <span class="ore-badge ore-coal">⚫ Coal Tier</span>
+      </div>
+    </div>
+
   </div>
 
   <!-- Footer -->
-  <footer class="bg-[#0b0e17] border-t border-brand-cardBorder py-6 px-6 text-center text-xs text-gray-500 space-y-2 mt-8">
-    <p class="font-semibold text-gray-400">© 2026 CMTIERS. All rights reserved.</p>
-    <p class="text-[11px] text-gray-600 max-w-xl mx-auto">
-      Not affiliated with Mojang Studios or Microsoft. Minecraft is a registered trademark of Mojang Synergies AB.
-    </p>
-  </footer>
+  <div class="footer">
+    <p>© 2026 CMTIERS. All rights reserved.</p>
+    <p>Not affiliated with Mojang Studios.</p>
+  </div>
 
-  <!-- Script Logic -->
   <script>
-    lucide.createIcons();
+    function toggleMenu() {
+      document.getElementById('drawer').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('show');
+    }
 
-    // Player Data - All names set to Steve
-    const players = [
-      { rank: 1, name: "Steve", tier: "GOD", tierColor: "bg-indigo-900/60 text-indigo-300 border-indigo-500/40", points: "1,623", winrate: "78%", wl: "234 / 67" },
-      { rank: 2, name: "Steve", tier: "LORD", tierColor: "bg-purple-900/60 text-purple-300 border-purple-500/40", points: "1,482", winrate: "74%", wl: "201 / 71" },
-      { rank: 3, name: "Steve", tier: "LEGEND", tierColor: "bg-amber-900/60 text-amber-300 border-amber-500/40", points: "1,311", winrate: "69%", wl: "176 / 78" },
-      { rank: 4, name: "Steve", tier: "LEGEND", tierColor: "bg-amber-900/60 text-amber-300 border-amber-500/40", points: "1,204", winrate: "63%", wl: "143 / 84" },
-      { rank: 5, name: "Steve", tier: "ELITE", tierColor: "bg-cyan-900/60 text-cyan-300 border-cyan-500/40", points: "1,109", winrate: "58%", wl: "128 / 92" },
-      { rank: 6, name: "Steve", tier: "ELITE", tierColor: "bg-cyan-900/60 text-cyan-300 border-cyan-500/40", points: "1,042", winrate: "56%", wl: "121 / 95" },
-      { rank: 7, name: "Steve", tier: "MASTER", tierColor: "bg-emerald-900/60 text-emerald-300 border-emerald-500/40", points: "956", winrate: "52%", wl: "104 / 96" },
-      { rank: 8, name: "Steve", tier: "MASTER", tierColor: "bg-emerald-900/60 text-emerald-300 border-emerald-500/40", points: "912", winrate: "49%", wl: "97 / 101" },
-      { rank: 9, name: "Steve", tier: "DIAMOND", tierColor: "bg-blue-900/60 text-blue-300 border-blue-500/40", points: "874", winrate: "47%", wl: "88 / 98" },
-      { rank: 10, name: "Steve", tier: "DIAMOND", tierColor: "bg-blue-900/60 text-blue-300 border-blue-500/40", points: "831", winrate: "44%", wl: "76 / 97" }
-    ];
+    function navigateTo(targetSelector) {
+      toggleMenu();
+      const targetElement = document.querySelector(targetSelector);
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
 
-    const tiers = [
-      { name: "GOD", pts: "1,500+ pts", color: "bg-indigo-900/60 text-indigo-300 border-indigo-500/40" },
-      { name: "LORD", pts: "1,300 – 1,499 pts", color: "bg-purple-900/60 text-purple-300 border-purple-500/40" },
-      { name: "LEGEND", pts: "1,100 – 1,299 pts", color: "bg-amber-900/60 text-amber-300 border-amber-500/40" },
-      { name: "ELITE", pts: "900 – 1,099 pts", color: "bg-cyan-900/60 text-cyan-300 border-cyan-500/40" },
-      { name: "MASTER", pts: "700 – 899 pts", color: "bg-emerald-900/60 text-emerald-300 border-emerald-500/40" },
-      { name: "DIAMOND", pts: "500 – 699 pts", color: "bg-blue-900/60 text-blue-300 border-blue-500/40" },
-      { name: "PLATINUM", pts: "300 – 499 pts", color: "bg-slate-800 text-slate-300 border-slate-600" },
-      { name: "GOLD", pts: "100 – 299 pts", color: "bg-yellow-900/60 text-yellow-300 border-yellow-500/40" },
-      { name: "SILVER", pts: "1 – 99 pts", color: "bg-gray-800 text-gray-300 border-gray-600" },
-    ];
-
-    // Populate Leaderboard
-    const leaderboardBody = document.getElementById('leaderboard-body');
-    leaderboardBody.innerHTML = players.map(player => `
-      <tr class="hover:bg-brand-hover transition-colors">
-        <td class="py-3 px-4 font-black ${player.rank <= 3 ? 'text-yellow-400' : 'text-gray-500'}">${player.rank}.</td>
-        <td class="py-3 px-4 font-bold text-white flex items-center gap-2.5">
-          <img src="https://mc-heads.net/avatar/Steve/24" class="w-6 h-6 rounded mc-skin border border-gray-700" alt="Steve" />
-          ${player.name}
-        </td>
-        <td class="py-3 px-4">
-          <span class="text-[10px] px-2.5 py-1 rounded font-extrabold border ${player.tierColor}">${player.tier}</span>
-        </td>
-        <td class="py-3 px-4 font-bold text-gray-200">${player.points}</td>
-        <td class="py-3 px-4 font-medium text-gray-300">${player.winrate}</td>
-        <td class="py-3 px-4 text-gray-400 text-[11px]">${player.wl}</td>
-      </tr>
-    `).join('');
-
-    // Populate Tier Ranges
-    const tierList = document.getElementById('tier-list');
-    tierList.innerHTML = tiers.map(tier => `
-      <div class="flex items-center justify-between">
-        <span class="text-[10px] px-2 py-0.5 rounded font-extrabold border ${tier.color}">${tier.name}</span>
-        <span class="text-gray-400 text-xs font-semibold">${tier.pts}</span>
-      </div>
-    `).join('');
-
-    // Populate Recently Viewed
-    const recentlyViewed = document.getElementById('recently-viewed');
-    recentlyViewed.innerHTML = players.slice(1, 6).map(p => `
-      <div class="flex items-center justify-between py-1.5 hover:bg-brand-hover px-2 rounded-lg transition-colors cursor-pointer">
-        <div class="flex items-center gap-2">
-          <img src="https://mc-heads.net/avatar/Steve/20" class="w-5 h-5 rounded mc-skin" alt="Steve" />
-          <span class="text-xs font-bold text-gray-200">${p.name}</span>
-        </div>
-        <span class="text-[9px] px-2 py-0.5 rounded font-extrabold border ${p.tierColor}">${p.tier}</span>
-      </div>
-    `).join('');
+    function showComingSoon() {
+      toggleMenu();
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
   </script>
 </body>
 </html>
