@@ -5,70 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CMTIERS - MCPE 0.15.10 UHC Tier List</title>
   <style>
-  /* Background Canvas Styling */
-#bg-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  background: radial-gradient(circle at 50% 20%, #171d2b 0%, #0b0e14 80%);
-  pointer-events: none;
-}
-
-  /* --- UI ENHANCEMENT STYLES --- */
-
-/* Modern Mesh/Grid Background with Smooth Scroll */
-body {
-  background-color: #0b0e14;
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(255, 183, 3, 0.08) 0%, transparent 50%),
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 100% 100%, 30px 30px, 30px 30px;
-  background-attachment: fixed;
-}
-
-/* Glassmorphism Header */
-.navbar {
-  background: rgba(15, 18, 25, 0.8) !important;
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Sleek Cards with Hover Glow */
-.player-card {
-  background: rgba(20, 24, 34, 0.7);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.player-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255, 183, 3, 0.3);
-  box-shadow: 0 8px 25px rgba(255, 183, 3, 0.1);
-}
-
-/* Glowing Ore Badges */
-.ore-badge {
-  letter-spacing: 0.5px;
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-}
-
-.ore-netherite { box-shadow: 0 0 10px rgba(112, 88, 136, 0.3); }
-.ore-diamond   { box-shadow: 0 0 10px rgba(64, 224, 208, 0.25); }
-.ore-emerald   { box-shadow: 0 0 10px rgba(80, 200, 120, 0.25); }
-.ore-gold      { box-shadow: 0 0 10px rgba(255, 215, 0, 0.25); }
-.ore-iron      { box-shadow: 0 0 10px rgba(192, 192, 192, 0.2); }
-.ore-redstone  { box-shadow: 0 0 10px rgba(255, 42, 42, 0.25); }
-
     :root {
       --bg-dark: #0b0e14;
-      --card-bg: #141822;
-      --card-border: #22293a;
+      --card-bg: rgba(20, 24, 34, 0.8);
+      --card-border: rgba(255, 255, 255, 0.08);
       --accent-gold: #ffb703;
       --accent-blue: #5865f2;
       --text-main: #f0f2f5;
@@ -103,6 +43,18 @@ body {
       line-height: 1.5;
     }
 
+    /* Background Canvas */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      background: radial-gradient(circle at 50% 20%, #171d2b 0%, #0b0e14 80%);
+      pointer-events: none;
+    }
+
     /* Notification Banner */
     .toast-banner {
       position: fixed;
@@ -129,10 +81,10 @@ body {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background-color: rgba(20, 24, 34, 0.95);
-      backdrop-filter: blur(10px);
+      background: rgba(15, 18, 25, 0.8);
+      backdrop-filter: blur(12px);
       padding: 14px 24px;
-      border-bottom: 1px solid var(--card-border);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -212,7 +164,7 @@ body {
       gap: 12px;
       padding: 12px 16px;
       border-radius: 10px;
-      background: var(--card-bg);
+      background: rgba(20, 24, 34, 0.9);
       border: 1px solid var(--card-border);
       transition: all 0.2s;
       cursor: pointer;
@@ -253,14 +205,15 @@ body {
       margin: 0 auto;
     }
 
-    /* Rules & Info Card */
+    /* Rules Card */
     .info-card {
-      background: linear-gradient(145deg, #181d2a, #111520);
+      background: rgba(20, 24, 34, 0.85);
+      backdrop-filter: blur(10px);
       border: 1px solid var(--accent-gold);
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 24px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
     }
 
     .info-title {
@@ -268,9 +221,6 @@ body {
       font-weight: 800;
       color: var(--accent-gold);
       margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .info-desc {
@@ -294,11 +244,7 @@ body {
       font-weight: 700;
     }
 
-    /* Section Headers */
     .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       margin-bottom: 16px;
     }
 
@@ -308,19 +254,22 @@ body {
       color: var(--text-main);
     }
 
-    /* Player Card Desktop & Mobile Responsive Grid */
+    /* Player Cards */
     .player-card {
       background: var(--card-bg);
+      backdrop-filter: blur(8px);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 18px;
       margin-bottom: 16px;
-      transition: transform 0.2s, border-color 0.2s;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .player-card:hover {
-      border-color: #384561;
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      border-color: rgba(255, 183, 3, 0.3);
+      box-shadow: 0 8px 25px rgba(255, 183, 3, 0.1);
     }
 
     .card-top {
@@ -367,17 +316,47 @@ body {
       font-weight: 700;
     }
 
+    /* Player Tag Container */
+    .player-tags {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .region-tag {
       background: rgba(255, 107, 107, 0.15);
       border: 1px solid rgba(255, 107, 107, 0.3);
       color: #ff6b6b;
-      padding: 4px 12px;
+      padding: 4px 10px;
       border-radius: 20px;
       font-size: 0.78rem;
       font-weight: 800;
     }
 
-    /* Ore Tier Badges */
+    .device-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .device-mobile {
+      background: rgba(88, 101, 242, 0.15);
+      border: 1px solid rgba(88, 101, 242, 0.4);
+      color: #7983f5;
+    }
+
+    .device-pc {
+      background: rgba(80, 200, 120, 0.15);
+      border: 1px solid rgba(80, 200, 120, 0.4);
+      color: #50c878;
+    }
+
+    /* Ore Badges */
     .tier-section-title {
       font-size: 0.75rem;
       color: var(--text-muted);
@@ -400,15 +379,16 @@ body {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
     }
 
-    .ore-netherite { background: var(--ore-netherite); color: #e2d9f3; border: 1px solid var(--border-netherite); }
-    .ore-diamond   { background: rgba(64, 224, 208, 0.15); color: var(--ore-diamond); border: 1px solid var(--ore-diamond); }
-    .ore-emerald   { background: rgba(80, 200, 120, 0.15); color: var(--ore-emerald); border: 1px solid var(--ore-emerald); }
-    .ore-gold      { background: rgba(255, 215, 0, 0.15); color: var(--ore-gold); border: 1px solid var(--ore-gold); }
-    .ore-iron      { background: rgba(192, 192, 192, 0.15); color: var(--ore-iron); border: 1px solid var(--ore-iron); }
-    .ore-redstone  { background: rgba(255, 42, 42, 0.15); color: var(--ore-redstone); border: 1px solid var(--ore-redstone); }
+    .ore-netherite { background: var(--ore-netherite); color: #e2d9f3; border: 1px solid var(--border-netherite); box-shadow: 0 0 10px rgba(112, 88, 136, 0.3); }
+    .ore-diamond   { background: rgba(64, 224, 208, 0.15); color: var(--ore-diamond); border: 1px solid var(--ore-diamond); box-shadow: 0 0 10px rgba(64, 224, 208, 0.25); }
+    .ore-emerald   { background: rgba(80, 200, 120, 0.15); color: var(--ore-emerald); border: 1px solid var(--ore-emerald); box-shadow: 0 0 10px rgba(80, 200, 120, 0.25); }
+    .ore-gold      { background: rgba(255, 215, 0, 0.15); color: var(--ore-gold); border: 1px solid var(--ore-gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.25); }
+    .ore-iron      { background: rgba(192, 192, 192, 0.15); color: var(--ore-iron); border: 1px solid var(--ore-iron); box-shadow: 0 0 10px rgba(192, 192, 192, 0.2); }
+    .ore-redstone  { background: rgba(255, 42, 42, 0.15); color: var(--ore-redstone); border: 1px solid var(--ore-redstone); box-shadow: 0 0 10px rgba(255, 42, 42, 0.25); }
     .ore-coal      { background: rgba(85, 85, 85, 0.2); color: #bbb; border: 1px solid var(--ore-coal); }
 
     /* Footer */
@@ -425,75 +405,18 @@ body {
       margin-bottom: 6px;
     }
 
-    /* Windows / Large Screen Enhancements */
     @media (min-width: 768px) {
-      .container {
-        padding: 30px 20px;
-      }
-      .player-card {
-        padding: 22px;
-      }
-      .avatar {
-        width: 56px;
-        height: 56px;
-      }
-      .player-name {
-        font-size: 1.3rem;
-      }
+      .container { padding: 30px 20px; }
+      .player-card { padding: 22px; }
+      .avatar { width: 56px; height: 56px; }
+      .player-name { font-size: 1.3rem; }
     }
-    /* --- UI ENHANCEMENT STYLES --- */
-
-/* Modern Mesh/Grid Background with Smooth Scroll */
-body {
-  background-color: #0b0e14;
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(255, 183, 3, 0.08) 0%, transparent 50%),
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 100% 100%, 30px 30px, 30px 30px;
-  background-attachment: fixed;
-}
-
-/* Glassmorphism Header */
-.navbar {
-  background: rgba(15, 18, 25, 0.8) !important;
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Sleek Cards with Hover Glow */
-.player-card {
-  background: rgba(20, 24, 34, 0.7);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.player-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255, 183, 3, 0.3);
-  box-shadow: 0 8px 25px rgba(255, 183, 3, 0.1);
-}
-
-/* Glowing Ore Badges */
-.ore-badge {
-  letter-spacing: 0.5px;
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-}
-
-.ore-netherite { box-shadow: 0 0 10px rgba(112, 88, 136, 0.3); }
-.ore-diamond   { box-shadow: 0 0 10px rgba(64, 224, 208, 0.25); }
-.ore-emerald   { box-shadow: 0 0 10px rgba(80, 200, 120, 0.25); }
-.ore-gold      { box-shadow: 0 0 10px rgba(255, 215, 0, 0.25); }
-.ore-iron      { box-shadow: 0 0 10px rgba(192, 192, 192, 0.2); }
-.ore-redstone  { box-shadow: 0 0 10px rgba(255, 42, 42, 0.25); }
-
   </style>
 </head>
-<body id="top"><!-- Cyber Canvas Background -->
-<canvas id="bg-canvas"></canvas>
+<body id="top">
 
+  <!-- Canvas Background -->
+  <canvas id="bg-canvas"></canvas>
 
   <!-- Notification Banner -->
   <div class="toast-banner" id="toast">Downloads Coming Soon...</div>
@@ -542,13 +465,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#1</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <img class="avatar" src="https://mc-heads.net/avatar/Frxnce" alt="Frxnce">
           <div>
-            <div class="player-name">Player_1</div>
+            <div class="player-name">Frxnce 👑</div>
             <div class="points-info"><span>2,000 pts</span> • Max Rank</div>
           </div>
         </div>
-        <div class="region-tag">NA</div>
+        <div class="player-tags">
+          <div class="region-tag">EU</div>
+          <div class="device-tag device-pc">💻 PC</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -561,13 +487,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#2</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <img class="avatar" src="https://mc-heads.net/avatar/LoveSosa" alt="LoveSosa">
           <div>
-            <div class="player-name">Player_2</div>
+            <div class="player-name">LoveSosa ⚡</div>
             <div class="points-info"><span>1,850 pts</span> • Next Rank: +150 pts</div>
           </div>
         </div>
-        <div class="region-tag">EU</div>
+        <div class="player-tags">
+          <div class="region-tag">EU</div>
+          <div class="device-tag device-pc">💻 PC</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -580,13 +509,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#3</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <img class="avatar" src="https://mc-heads.net/avatar/CheaterSlxrn" alt="CheaterSlxrn">
           <div>
-            <div class="player-name">Player_3</div>
+            <div class="player-name">CheaterSlxrn 🔥</div>
             <div class="points-info"><span>1,720 pts</span> • Next Rank: +130 pts</div>
           </div>
         </div>
-        <div class="region-tag">ASIA</div>
+        <div class="player-tags">
+          <div class="region-tag">EU</div>
+          <div class="device-tag device-pc">💻 PC</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -599,13 +531,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#4</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <img class="avatar" src="https://mc-heads.net/avatar/RealSTON" alt="RealSTON">
           <div>
-            <div class="player-name">Player_4</div>
+            <div class="player-name">RealSTON 🗿</div>
             <div class="points-info"><span>1,600 pts</span> • Next Rank: +120 pts</div>
           </div>
         </div>
-        <div class="region-tag">NA</div>
+        <div class="player-tags">
+          <div class="region-tag">ASIA</div>
+          <div class="device-tag device-mobile">📱 Mobile</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -618,13 +553,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#5</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <img class="avatar" src="https://mc-heads.net/avatar/MR_COMMUNIST" alt="MR_COMMUNIST">
           <div>
-            <div class="player-name">Player_5</div>
+            <div class="player-name">MR_COMMUNIST ☭</div>
             <div class="points-info"><span>1,510 pts</span> • Next Rank: +90 pts</div>
           </div>
         </div>
-        <div class="region-tag">EU</div>
+        <div class="player-tags">
+          <div class="region-tag">EU</div>
+          <div class="device-tag device-pc">💻 PC</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -637,13 +575,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#6</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <img class="avatar" src="https://mc-heads.net/avatar/TrashBinHitler" alt="TrashBinHitler">
           <div>
-            <div class="player-name">Player_6</div>
+            <div class="player-name">TrashBinHitler 🗑️</div>
             <div class="points-info"><span>1,430 pts</span> • Next Rank: +80 pts</div>
           </div>
         </div>
-        <div class="region-tag">NA</div>
+        <div class="player-tags">
+          <div class="region-tag">N/A</div>
+          <div class="device-tag device-mobile">📱 Mobile</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -656,13 +597,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#7</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <img class="avatar" src="https://mc-heads.net/avatar/TrashBinLaden" alt="TrashBinLaden">
           <div>
-            <div class="player-name">Player_7</div>
+            <div class="player-name">TrashBinLaden 💣</div>
             <div class="points-info"><span>1,350 pts</span> • Next Rank: +80 pts</div>
           </div>
         </div>
-        <div class="region-tag">SA</div>
+        <div class="player-tags">
+          <div class="region-tag">N/A</div>
+          <div class="device-tag device-pc">💻 PC</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -675,13 +619,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#8</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <img class="avatar" src="https://mc-heads.net/avatar/GameSpilt" alt="GameSpilt">
           <div>
-            <div class="player-name">Player_8</div>
+            <div class="player-name">GameSpilt 🎯</div>
             <div class="points-info"><span>1,280 pts</span> • Next Rank: +70 pts</div>
           </div>
         </div>
-        <div class="region-tag">EU</div>
+        <div class="player-tags">
+          <div class="region-tag">ASIA</div>
+          <div class="device-tag device-mobile">📱 Mobile</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -694,13 +641,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#9</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <img class="avatar" src="https://mc-heads.net/avatar/JustinGqng" alt="JustinGqng">
           <div>
-            <div class="player-name">Player_9</div>
+            <div class="player-name">JustinGqng 🐉</div>
             <div class="points-info"><span>1,210 pts</span> • Next Rank: +70 pts</div>
           </div>
         </div>
-        <div class="region-tag">ASIA</div>
+        <div class="player-tags">
+          <div class="region-tag">ASIA</div>
+          <div class="device-tag device-mobile">📱 Mobile</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -713,13 +663,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#10</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <img class="avatar" src="https://mc-heads.net/avatar/Foxeey" alt="Foxeey">
           <div>
-            <div class="player-name">Player_10</div>
+            <div class="player-name">Foxeey 🦊</div>
             <div class="points-info"><span>1,150 pts</span> • Next Rank: +60 pts</div>
           </div>
         </div>
-        <div class="region-tag">NA</div>
+        <div class="player-tags">
+          <div class="region-tag">N/A</div>
+          <div class="device-tag device-pc">💻 PC</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -732,13 +685,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#11</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <img class="avatar" src="https://mc-heads.net/avatar/Rogg" alt="Rogg">
           <div>
-            <div class="player-name">Player_11</div>
+            <div class="player-name">Rogg ⚔️</div>
             <div class="points-info"><span>1,090 pts</span> • Next Rank: +60 pts</div>
           </div>
         </div>
-        <div class="region-tag">EU</div>
+        <div class="player-tags">
+          <div class="region-tag">ASIA</div>
+          <div class="device-tag device-pc">💻 PC</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -751,13 +707,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#12</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <img class="avatar" src="https://mc-heads.net/avatar/VexBeServin" alt="VexBeServin">
           <div>
-            <div class="player-name">Player_12</div>
+            <div class="player-name">VexBeServin 🧊</div>
             <div class="points-info"><span>1,030 pts</span> • Next Rank: +60 pts</div>
           </div>
         </div>
-        <div class="region-tag">NA</div>
+        <div class="player-tags">
+          <div class="region-tag">ASIA</div>
+          <div class="device-tag device-mobile">📱 Mobile</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -770,13 +729,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#13</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <img class="avatar" src="https://mc-heads.net/avatar/White" alt="White">
           <div>
-            <div class="player-name">Player_13</div>
+            <div class="player-name">White ⚪</div>
             <div class="points-info"><span>980 pts</span> • Next Rank: +50 pts</div>
           </div>
         </div>
-        <div class="region-tag">SA</div>
+        <div class="player-tags">
+          <div class="region-tag">ASIA</div>
+          <div class="device-tag device-mobile">📱 Mobile</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -789,13 +751,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#14</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Alex" alt="Alex">
+          <img class="avatar" src="https://mc-heads.net/avatar/MadaraUchiha" alt="MadaraUchiha">
           <div>
-            <div class="player-name">Player_14</div>
+            <div class="player-name">MadaraUchiha 👁️</div>
             <div class="points-info"><span>930 pts</span> • Next Rank: +50 pts</div>
           </div>
         </div>
-        <div class="region-tag">EU</div>
+        <div class="player-tags">
+          <div class="region-tag">ASIA</div>
+          <div class="device-tag device-pc">💻 PC</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -808,13 +773,16 @@ body {
       <div class="card-top">
         <div class="player-meta">
           <div class="rank-badge">#15</div>
-          <img class="avatar" src="https://mc-heads.net/avatar/Steve" alt="Steve">
+          <img class="avatar" src="https://mc-heads.net/avatar/RedShidou" alt="RedShidou">
           <div>
-            <div class="player-name">Player_15</div>
+            <div class="player-name">RedShidou 👹</div>
             <div class="points-info"><span>880 pts</span> • Next Rank: +50 pts</div>
           </div>
         </div>
-        <div class="region-tag">ASIA</div>
+        <div class="player-tags">
+          <div class="region-tag">N/A</div>
+          <div class="device-tag device-mobile">📱 Mobile</div>
+        </div>
       </div>
       <div class="tier-section-title">CURRENT TIER</div>
       <div class="tiers-grid">
@@ -826,11 +794,70 @@ body {
 
   <!-- Footer -->
   <div class="footer">
-    <p>© 2026 CMTIERS. All rights reserved.</p>
+    <p>© CMTIERS. All rights reserved.</p>
     <p>Not affiliated with Mojang Studios.</p>
   </div>
 
   <script>
+    // Canvas Cyber Background Animation
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const particles = Array.from({ length: 45 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 2 + 0.5,
+      color: Math.random() > 0.4 ? 'rgba(255, 183, 3, ' : 'rgba(88, 101, 242, ',
+      alpha: Math.random() * 0.6 + 0.2,
+      speedY: - (Math.random() * 0.5 + 0.2)
+    }));
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+      ctx.lineWidth = 1;
+      const gridSize = 40;
+      for (let x = 0; x < canvas.width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color + p.alpha + ')';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color + '0.8)';
+        ctx.fill();
+
+        p.y += p.speedY;
+        if (p.y < -10) {
+          p.y = canvas.height + 10;
+          p.x = Math.random() * canvas.width;
+        }
+      });
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Menu Controls
     function toggleMenu() {
       document.getElementById('drawer').classList.toggle('open');
       document.getElementById('overlay').classList.toggle('show');
@@ -853,68 +880,5 @@ body {
       }, 2500);
     }
   </script>
-  <script>
-  const canvas = document.getElementById('bg-canvas');
-  const ctx = canvas.getContext('2d');
-
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  // Floating Gold & Blue Particles
-  const particles = Array.from({ length: 45 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    radius: Math.random() * 2 + 0.5,
-    color: Math.random() > 0.4 ? 'rgba(255, 183, 3, ' : 'rgba(88, 101, 242, ',
-    alpha: Math.random() * 0.6 + 0.2,
-    speedY: - (Math.random() * 0.5 + 0.2)
-  }));
-
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Grid Effect
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
-    ctx.lineWidth = 1;
-    const gridSize = 40;
-    for (let x = 0; x < canvas.width; x += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, canvas.height);
-      ctx.stroke();
-    }
-    for (let y = 0; y < canvas.height; y += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(canvas.width, y);
-      ctx.stroke();
-    }
-
-    // Render & Move Particles
-    particles.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = p.color + p.alpha + ')';
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = p.color + '0.8)';
-      ctx.fill();
-
-      p.y += p.speedY;
-      if (p.y < -10) {
-        p.y = canvas.height + 10;
-        p.x = Math.random() * canvas.width;
-      }
-    });
-
-    requestAnimationFrame(animate);
-  }
-
-  animate();
-</script>
-
 </body>
 </html>
