@@ -5,6 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CMTIERS - MCPE 0.15.10 UHC Tier List</title>
   <style>
+  /* Background Canvas Styling */
+#bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background: radial-gradient(circle at 50% 20%, #171d2b 0%, #0b0e14 80%);
+  pointer-events: none;
+}
+
+  /* --- UI ENHANCEMENT STYLES --- */
+
+/* Modern Mesh/Grid Background with Smooth Scroll */
+body {
+  background-color: #0b0e14;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(255, 183, 3, 0.08) 0%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 30px 30px, 30px 30px;
+  background-attachment: fixed;
+}
+
+/* Glassmorphism Header */
+.navbar {
+  background: rgba(15, 18, 25, 0.8) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Sleek Cards with Hover Glow */
+.player-card {
+  background: rgba(20, 24, 34, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.player-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 183, 3, 0.3);
+  box-shadow: 0 8px 25px rgba(255, 183, 3, 0.1);
+}
+
+/* Glowing Ore Badges */
+.ore-badge {
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+.ore-netherite { box-shadow: 0 0 10px rgba(112, 88, 136, 0.3); }
+.ore-diamond   { box-shadow: 0 0 10px rgba(64, 224, 208, 0.25); }
+.ore-emerald   { box-shadow: 0 0 10px rgba(80, 200, 120, 0.25); }
+.ore-gold      { box-shadow: 0 0 10px rgba(255, 215, 0, 0.25); }
+.ore-iron      { box-shadow: 0 0 10px rgba(192, 192, 192, 0.2); }
+.ore-redstone  { box-shadow: 0 0 10px rgba(255, 42, 42, 0.25); }
+
     :root {
       --bg-dark: #0b0e14;
       --card-bg: #141822;
@@ -431,7 +491,9 @@ body {
 
   </style>
 </head>
-<body id="top">
+<body id="top"><!-- Cyber Canvas Background -->
+<canvas id="bg-canvas"></canvas>
+
 
   <!-- Notification Banner -->
   <div class="toast-banner" id="toast">Downloads Coming Soon...</div>
@@ -791,5 +853,68 @@ body {
       }, 2500);
     }
   </script>
+  <script>
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Floating Gold & Blue Particles
+  const particles = Array.from({ length: 45 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    radius: Math.random() * 2 + 0.5,
+    color: Math.random() > 0.4 ? 'rgba(255, 183, 3, ' : 'rgba(88, 101, 242, ',
+    alpha: Math.random() * 0.6 + 0.2,
+    speedY: - (Math.random() * 0.5 + 0.2)
+  }));
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Grid Effect
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+    ctx.lineWidth = 1;
+    const gridSize = 40;
+    for (let x = 0; x < canvas.width; x += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, canvas.height);
+      ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvas.width, y);
+      ctx.stroke();
+    }
+
+    // Render & Move Particles
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + p.alpha + ')';
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = p.color + '0.8)';
+      ctx.fill();
+
+      p.y += p.speedY;
+      if (p.y < -10) {
+        p.y = canvas.height + 10;
+        p.x = Math.random() * canvas.width;
+      }
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+</script>
+
 </body>
 </html>
