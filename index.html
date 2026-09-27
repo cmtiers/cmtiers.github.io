@@ -3,129 +3,261 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- SEO & GOOGLE SEARCH METADATA -->
-  <title>CMTIERS - MCPE 0.15.10 UHC Tier List & Leaderboard</title>
-  <meta name="description" content="Official competitive ranking ladder and UHC tier list for MCPE 0.15.10 PvP. View real-time player standings, FT7 duel records, region stats, and tier classifications.">
-  <meta name="keywords" content="MCPE 0.15.10, CMTIERS, MCPE PvP Tier List, UHC Tier List, Minecraft Pocket Edition PvP, PocketMine PvP Rankings">
-  <meta name="author" content="CMTIERS">
+  <title>CMTIERS - System Updating</title>
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --card-bg: rgba(18, 22, 33, 0.85);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent-cyan: #00f2fe;
+      --accent-gold: #ffb703;
+      --accent-purple: #7928ca;
+      --text-main: #f0f2f5;
+      --text-muted: #8e9bb0;
+    }
 
-  <!-- OPEN GRAPH / SOCIAL MEDIA PREVIEW -->
-  <meta property="og:title" content="CMTIERS - MCPE 0.15.10 UHC Tier List">
-  <meta property="og:description" content="Official ladder rankings and competitive UHC tiers for MCPE 0.15.10. Check top players, winrates, and challenge rules.">
-  <meta property="og:type" content="website">
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
 
-  <!-- FAVICON -->
-  <link rel="icon" type="image/svg+xml" href="logo.svg">
-  <link rel="stylesheet" href="style.css">
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 40px 32px;
+      max-width: 460px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 242, 254, 0.15);
+    }
+
+    /* Animated Status Icon */
+    .icon-wrapper {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gear-icon {
+      font-size: 3rem;
+      animation: spin 6s linear infinite;
+      display: inline-block;
+      filter: drop-shadow(0 0 10px var(--accent-cyan));
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .brand-title {
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      color: var(--accent-cyan);
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .message {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    /* Progress Bar */
+    .progress-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      box-shadow: 0 0 10px var(--accent-cyan);
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .discord-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+      background: linear-gradient(135deg, #5865f2, #4752c4);
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .discord-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(88, 101, 242, 0.4);
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Background Canvas -->
   <canvas id="bg-canvas"></canvas>
 
-  <!-- Corner Smoke FX Canvas -->
-  <canvas id="smoke-canvas"></canvas>
-
-  <!-- 72-HOUR PRE-ENTRY COUNTDOWN LOCK OVERLAY -->
-  <div id="timer-lockscreen">
-    <div class="lock-title">CMTIERS UPDATE UNLOCK</div>
-    <div class="lock-subtitle">Leaderboard Unlocks In</div>
-    
-    <div class="clock-display">
-      <div class="clock-box">
-        <div class="clock-val" id="hrs">00</div>
-        <div class="clock-lbl">Hours</div>
-      </div>
-      <div class="clock-sep">:</div>
-      <div class="clock-box">
-        <div class="clock-val" id="mins">00</div>
-        <div class="clock-lbl">Mins</div>
-      </div>
-      <div class="clock-sep">:</div>
-      <div class="clock-box">
-        <div class="clock-val" id="secs">05</div>
-        <div class="clock-lbl">Secs</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- NAVBAR -->
-  <div class="navbar">
-    <div class="brand">
-      <img src="logo.svg" alt="CMTIERS Logo" class="nav-logo">
-      <span>CMTIERS</span>
-    </div>
-    <div class="nav-actions">
-      <button class="theme-btn" id="themeToggleBtn" aria-label="Toggle Theme">🌙</button>
-      <button class="menu-trigger" id="openMenuBtn" aria-label="Open Navigation">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </div>
-
-  <!-- SLIDE-OUT DRAWER NAV -->
-  <div class="drawer-overlay" id="drawerOverlay"></div>
-  <div class="drawer" id="drawer">
-    <div class="drawer-header">
-      <div class="drawer-title">NAVIGATION</div>
-      <button class="close-btn" id="closeMenuBtn">✕</button>
-    </div>
-    <ul class="drawer-nav">
-      <li><button onclick="scrollToLeaderboard()">🏠 Leaderboard</button></li>
-      <li><button onclick="openModal('rulesModal')">📜 Rules</button></li>
-      <li><button onclick="openModal('rankingsModal')">📈 How Rankings Work</button></li>
-      <li><button onclick="openModal('achievementsModal')">🏆 Titles & Achievements</button></li>
-      <li><button id="soundToggleBtn" onclick="toggleSound()">🔊 Sound FX: ON</button></li>
-      <li><a href="https://discord.gg/FngWr4ZVZ" target="_blank" class="discord-btn">💬 Join Discord</a></li>
-    </ul>
-  </div>
-
-  <!-- MAIN LEADERBOARD SECTION -->
   <div class="container">
-    <div class="page-title-banner">
-      <h1>CMTIERS - MCPE 0.15.10 PVP</h1>
-      <p>Official Ladder Rankings</p>
+    <div class="icon-wrapper">
+      <span class="gear-icon">⚙️</span>
     </div>
 
-    <!-- DEVICE SEPARATION TABS -->
-    <div class="device-tabs">
-      <button class="tab-btn active" onclick="filterDevice('ALL', this)">🌐 ALL</button>
-      <button class="tab-btn" onclick="filterDevice('Mobile', this)">📱 MOBILE</button>
-      <button class="tab-btn" onclick="filterDevice('PC', this)">💻 PC</button>
-    </div>
+    <div class="brand-title">CMTIERS</div>
+    <div class="status-badge">System Maintenance</div>
 
-    <!-- CLEAN LEADERBOARD LIST -->
-    <div class="leaderboard-list" id="leaderboardList"></div>
+    <p class="message">
+      We are currently updating the leaderboard scores, rules, and server features. Check back soon!
+    </p>
+
+
+    <a href="https://discord.gg/FngWr4ZVZ" target="_blank" class="discord-btn">
+      💬 Join Discord for News
+    </a>
   </div>
 
-  <!-- MODALS -->
-  <div class="modal-backdrop" id="rulesModal">
-    <div class="modal-box">
-      <h3>📜 Rules</h3>
-      <p>1. All official ranking duels are First To 7 Wins (FT7).<br>2. Full screen recordings must be submitted to Discord.<br>3. Hacks, modifications, or illegal client patches result in an instant ladder ban.</p>
-      <button class="modal-close" onclick="closeModal('rulesModal')">Understood</button>
-    </div>
-  </div>
+  <script>
+    // Live Progress Simulation
+    let progress = 0;
+    const fill = document.getElementById('progressFill');
+    const percentText = document.getElementById('progressPercent');
 
-  <div class="modal-backdrop" id="rankingsModal">
-    <div class="modal-box">
-      <h3>📈 How Rankings Work</h3>
-      <p>Challenge players ranked above you in FT7 duels. Winning automatically swaps your ladder position. Tiers update dynamically based on your overall rank placement.</p>
-      <button class="modal-close" onclick="closeModal('rankingsModal')">Got It</button>
-    </div>
-  </div>
+    const interval = setInterval(() => {
+      progress += Math.floor(Math.random() * 8) + 2;
+      if (progress >= 92) {
+        progress = 92; // Holds near completion to indicate active updating
+        clearInterval(interval);
+      }
+      fill.style.width = progress + '%';
+      percentText.innerText = progress + '%';
+    }, 600);
 
-  <div class="modal-backdrop" id="achievementsModal">
-    <div class="modal-box">
-      <h3>🏆 Titles & Achievements</h3>
-      <p>• <b>UHC Warlord:</b> Rank #1 Spot<br>• <b>Flawless Victory:</b> 7-0 Match Sweep<br>• <b>Mobile Titan:</b> Rank #1 on Mobile Device</p>
-      <button class="modal-close" onclick="closeModal('achievementsModal')">Close</button>
-    </div>
-  </div>
+    // Interactive Floating Particles & Web Network Background
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
 
-  <script src="script.js"></script>
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const particles = Array.from({ length: 60 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: (Math.random() - 0.5) * 0.8,
+      size: Math.random() * 2 + 1
+    }));
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = '#00f2fe';
+        ctx.fill();
+
+        // Draw network connections between nearby particles
+        for (let j = i + 1; j < particles.length; j++) {
+          let p2 = particles[j];
+          let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(0, 242, 254, ${1 - dist / 120 * 0.8})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
 </body>
 </html>
+
