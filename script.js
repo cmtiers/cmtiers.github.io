@@ -3,7 +3,7 @@ var DATA_URL = "players.json";   // same path as tier-sync.file in the plugin's 
 var ROOT = "";                // e.g. "players" if the file looks like {"players": [ ... ]}
 var REFRESH_SECONDS = 60;
 
-// Highest tier first. "keys" are the tier values the plugin writes (lower-case).
+// Highest tier first. "keys" are the tier values written by the plugin.
 var TIERS = [
   { label: "S+", keys: ["s+"],            bg: "#a3141b", fg: "#ffffff" },
   { label: "S",  keys: ["s"],             bg: "#ef5350", fg: "#14171c" },
@@ -117,7 +117,10 @@ function render() {
     
     b.list.forEach(function (p) {
       var chip = el("span", "chip");
-      chip.onclick = function(e) { openPlayerModal(p.name); triggerCardBlast(e); };
+      chip.addEventListener("click", function(e) {
+        openPlayerModal(p.name);
+        triggerCardBlast(e);
+      });
       
       var strong = el("strong", "", p.name);
       chip.appendChild(strong);
@@ -143,7 +146,7 @@ function render() {
 function load() {
   fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" })
     .then(function (r) {
-      if (!r.ok) throw new Error("HTTP " + r.status + " – check that the file exists in the repo and that DATA_URL matches tier-sync.file.");
+      if (!r.ok) throw new Error("HTTP " + r.status + " – check that " + DATA_URL + " exists in repository.");
       return r.json();
     })
     .then(function (d) {
@@ -155,7 +158,7 @@ function load() {
     })
     .catch(function (e) {
       failure = location.protocol === "file:"
-        ? "Browsers block loading data from a file opened on your computer. Open the page through GitHub Pages or a local server instead."
+        ? "Browsers block loading data from a local file. Host on GitHub Pages to test live."
         : String(e.message || e);
       render();
     });
