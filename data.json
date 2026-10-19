@@ -13,5 +13,10 @@
         "name": "RealSTON",
         "tier": "C Tier",
         "elo": 100
+    },
+    {
+        "name": "VexServin",
+        "tier": "C Tier",
+        "elo": 100
     }
 ]
