@@ -1,218 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>CMTiers – Ranked PvP tier list</title>
-<style>
-  :root {
-    --bg: #14171c; --band: #1c2027; --line: #2a303a;
-    --text: #e9edf2; --muted: #9aa4b2; --chip: #252b35;
-    box-sizing: border-box;
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    color-scheme: dark;
-  }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f3f5f8; --band: #ffffff; --line: #dde2ea;
-      --text: #14171c; --muted: #5b6575; --chip: #eef1f6;
-      color-scheme: light;
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  }
-  .wrap { max-width: 56rem; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
-  header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: .75rem 1rem; margin-bottom: 1.25rem; }
-  h1 { margin: 0; font-size: 2rem; line-height: 1.1; font-weight: 800; letter-spacing: -.02em; }
-  header p { margin: .15rem 0 0; color: var(--muted); }
-  .meta { display: flex; gap: 1rem; color: var(--muted); font-size: .9rem; }
-  input[type=search] {
-    width: 100%; margin-bottom: 1rem; padding: .7rem .9rem; font: inherit;
-    color: var(--text); background: var(--band); border: 1px solid var(--line); border-radius: .6rem;
-  }
-  input[type=search]:focus-visible { outline: 3px solid #5fa8ff; outline-offset: 1px; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>CMTIERS - Ranked PvP Tier List & Leaderboard</title>
+  <meta name="description" content="Official competitive ranking ladder and UHC tier list for MCPE 0.15.10 PvP. View real-time player standings, FT7 duel records, region stats, and tier classifications.">
+  <meta name="keywords" content="MCPE 0.15.10, CMTIERS, MCPE PvP Tier List, UHC Tier List, Minecraft Pocket Edition PvP, PocketMine PvP Rankings">
+  <meta name="author" content="CMTIERS">
 
-  .band { display: grid; grid-template-columns: 8.5rem 1fr; background: var(--band); border: 1px solid var(--line); border-radius: .75rem; overflow: hidden; margin-bottom: .75rem; }
-  .badge { display: flex; flex-direction: column; justify-content: center; padding: .9rem 1rem; }
-  .badge b { font-size: 1.9rem; line-height: 1; font-weight: 800; letter-spacing: -.02em; }
-  .badge span { margin-top: .3rem; font-size: .85rem; opacity: .85; }
-  .players { display: flex; flex-wrap: wrap; gap: .5rem; align-content: center; padding: .9rem; }
-  .chip { display: inline-flex; align-items: baseline; gap: .5rem; padding: .35rem .7rem; background: var(--chip); border-radius: 2rem; }
-  .chip strong { font-weight: 650; overflow-wrap: anywhere; }
-  .chip small { color: var(--muted); font-variant-numeric: tabular-nums; }
+  <meta property="og:title" content="CMTIERS - MCPE 0.15.10 UHC Tier List">
+  <meta property="og:description" content="Official ladder rankings and competitive UHC tiers for MCPE 0.15.10. Check top players, winrates, and challenge rules.">
+  <meta property="og:type" content="website">
 
-  .note { padding: 1.5rem 1rem; text-align: center; color: var(--muted); background: var(--band); border: 1px dashed var(--line); border-radius: .75rem; }
-  .note.err { color: var(--text); border-style: solid; border-color: #d9534f; text-align: left; }
-
-  @media (max-width: 36rem) {
-    .band { grid-template-columns: 1fr; }
-    .badge { flex-direction: row; align-items: baseline; justify-content: space-between; padding: .6rem 1rem; }
-    .badge span { margin: 0; }
-    h1 { font-size: 1.7rem; }
-  }
-</style>
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div>
-      <h1>CMTiers</h1>
-      <p>Ranked PvP tier list</p>
+
+  <!-- Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Corner Smoke FX Canvas -->
+  <canvas id="smoke-canvas"></canvas>
+
+  <!-- 10-SECOND LOCK OVERLAY -->
+  <div id="timer-lockscreen">
+    <div class="lock-title">CMTIERS UPDATE UNLOCK</div>
+    <div class="lock-subtitle">Leaderboard Unlocks In</div>
+    
+    <div class="clock-display">
+      <div class="clock-box">
+        <div class="clock-val" id="hrs">00</div>
+        <div class="clock-lbl">Hours</div>
+      </div>
+      <div class="clock-sep">:</div>
+      <div class="clock-box">
+        <div class="clock-val" id="mins">00</div>
+        <div class="clock-lbl">Mins</div>
+      </div>
+      <div class="clock-sep">:</div>
+      <div class="clock-box">
+        <div class="clock-val" id="secs">10</div>
+        <div class="clock-lbl">Secs</div>
+      </div>
     </div>
-    <div class="meta"><span id="count"></span><span id="updated"></span></div>
-  </header>
-  <input id="q" type="search" placeholder="Search players" aria-label="Search players" autocomplete="off">
-  <main id="out" aria-live="polite"></main>
-</div>
+  </div>
 
-<script>
-// ---- settings -------------------------------------------------------------
-var DATA_URL = "data.json";   // same path as tier-sync.file in the plugin's config.yml
-var ROOT = "";                // e.g. "players" if the file looks like {"players": [ ... ]}
-var REFRESH_SECONDS = 60;
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="brand">
+      <span>CMTIERS</span>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-btn" id="themeToggleBtn" aria-label="Toggle Theme">🌙</button>
+      <button class="menu-trigger" id="openMenuBtn" aria-label="Open Navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
 
-// Highest tier first. "keys" are the tier values the plugin writes (lower-case).
-// If you use tier-map in the plugin, put the site's names here (e.g. keys: ["ht1"]).
-var TIERS = [
-  { label: "S+", keys: ["s+"],            bg: "#a3141b", fg: "#ffffff" },
-  { label: "S",  keys: ["s"],             bg: "#ef5350", fg: "#14171c" },
-  { label: "A+", keys: ["a+"],            bg: "#f5a623", fg: "#14171c" },
-  { label: "A",  keys: ["a"],             bg: "#f2d94e", fg: "#14171c" },
-  { label: "B+", keys: ["b+"],            bg: "#1fa7a0", fg: "#07211f" },
-  { label: "B",  keys: ["b"],             bg: "#5fd8e6", fg: "#07211f" },
-  { label: "C+", keys: ["c+"],            bg: "#2f9e5b", fg: "#07210f" },
-  { label: "C",  keys: ["c tier", "c"],   bg: "#8fdc6e", fg: "#102507" }
-];
-var OTHER = { bg: "#6b7280", fg: "#ffffff" };
-// ---------------------------------------------------------------------------
+  <!-- SLIDE-OUT DRAWER NAV -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-title">NAVIGATION</div>
+      <button class="close-btn" id="closeMenuBtn">✕</button>
+    </div>
+    <ul class="drawer-nav">
+      <li><button onclick="scrollToLeaderboard()">🏠 Leaderboard</button></li>
+      <li><button onclick="openModal('compareModal')">⚔️ Compare Players</button></li>
+      <li><button onclick="openModal('rulesModal')">📜 Rules</button></li>
+      <li><button onclick="openModal('rankingsModal')">📈 How Rankings Work</button></li>
+      <li><button onclick="openModal('achievementsModal')">🏆 Titles & Achievements</button></li>
+      <li><a href="https://discord.gg/FngWr4ZVZ" target="_blank" class="discord-btn">💬 Join Discord</a></li>
+    </ul>
+  </div>
 
-var players = [], loaded = false, failure = "";
-var out = document.getElementById("out");
-var q = document.getElementById("q");
+  <!-- MAIN WRAPPER -->
+  <div class="wrap">
+    <header class="header-wrap">
+      <div>
+        <h1>CMTiers</h1>
+        <p>Ranked PvP tier list</p>
+      </div>
+      <div class="meta"><span id="count"></span><span id="updated"></span></div>
+    </header>
 
-function el(tag, cls, text) {
-  var e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (text !== undefined) e.textContent = text;   // textContent: player names are never parsed as HTML
-  return e;
-}
+    <input id="q" type="search" placeholder="Search players or tier..." aria-label="Search players" autocomplete="off" oninput="render()">
 
-function toPlayers(d) {
-  if (ROOT) {
-    ROOT.split(".").forEach(function (k) { d = d && d[k]; });
-  }
-  var list = [];
-  if (Array.isArray(d)) {
-    list = d;
-  } else if (d && typeof d === "object") {
-    if (Array.isArray(d.players)) {
-      list = d.players;
-    } else {
-      list = Object.keys(d).map(function (k) { return Object.assign({ name: k }, d[k]); });
-    }
-  }
-  return list.map(function (p) {
-    return { name: String(p && p.name || "").trim(), tier: String(p && p.tier || "").trim(), elo: Number(p && p.elo) || 0 };
-  }).filter(function (p) { return p.name !== ""; });
-}
+    <main id="out" aria-live="polite"></main>
+  </div>
 
-function tierIndex(tier) {
-  var n = tier.toLowerCase();
-  for (var i = 0; i < TIERS.length; i++) {
-    if (TIERS[i].keys.indexOf(n) !== -1) return i;
-  }
-  return -1;
-}
+  <!-- MODALS -->
+  <div class="modal-backdrop" id="rulesModal">
+    <div class="modal-box">
+      <h3>📜 Rules</h3>
+      <p>1. All official ranking duels are First To 7 Wins (FT7).<br>2. Full screen recordings must be submitted to Discord.<br>3. Hacks, modifications, or illegal client patches result in an instant ladder ban.</p>
+      <button class="modal-close" onclick="closeModal('rulesModal')">Understood</button>
+    </div>
+  </div>
 
-function render() {
-  out.textContent = "";
-  document.getElementById("count").textContent = loaded ? players.length + (players.length === 1 ? " player" : " players") : "";
+  <div class="modal-backdrop" id="rankingsModal">
+    <div class="modal-box">
+      <h3>📈 How Rankings Work</h3>
+      <p>Challenge players ranked above you in FT7 duels. Winning automatically swaps your ladder position. Tiers update dynamically based on your overall rank placement.</p>
+      <button class="modal-close" onclick="closeModal('rankingsModal')">Got It</button>
+    </div>
+  </div>
 
-  if (failure) {
-    var err = el("div", "note err");
-    err.appendChild(el("strong", "", "Couldn’t load " + DATA_URL));
-    err.appendChild(el("div", "", failure));
-    out.appendChild(err);
-    return;
-  }
-  if (!loaded) { out.appendChild(el("div", "note", "Loading…")); return; }
-  if (players.length === 0) {
-    out.appendChild(el("div", "note", "No players yet. Players appear here once they reach C Tier."));
-    return;
-  }
+  <div class="modal-backdrop" id="achievementsModal">
+    <div class="modal-box">
+      <h3>🏆 Titles & Achievements</h3>
+      <p>• <b>UHC Warlord:</b> Rank #1 Spot<br>• <b>Flawless Victory:</b> 7-0 Match Sweep<br>• <b>Mobile Titan:</b> Rank #1 on Mobile Device</p>
+      <button class="modal-close" onclick="closeModal('achievementsModal')">Close</button>
+    </div>
+  </div>
 
-  var term = q.value.trim().toLowerCase();
-  var bands = {};          // key -> { order, label, bg, fg, list }
-  players.forEach(function (p) {
-    if (term && p.name.toLowerCase().indexOf(term) === -1) return;
-    var i = tierIndex(p.tier);
-    var key = i >= 0 ? "t" + i : "o:" + p.tier.toLowerCase();
-    if (!bands[key]) {
-      bands[key] = i >= 0
-        ? { order: i, label: TIERS[i].label, bg: TIERS[i].bg, fg: TIERS[i].fg, list: [] }
-        : { order: 100, label: p.tier || "Unlisted", bg: OTHER.bg, fg: OTHER.fg, list: [] };
-    }
-    bands[key].list.push(p);
-  });
+  <!-- SINGLE PLAYER STATS OVERVIEW MODAL -->
+  <div class="modal-backdrop" id="playerStatsModal">
+    <div class="modal-box player-modal-box">
+      <div class="player-modal-header">
+        <img id="modalPlayerHead" src="" alt="Player Head">
+        <div class="player-modal-identity">
+          <h3 id="modalPlayerName">Player</h3>
+          <div id="modalPlayerBadges"></div>
+        </div>
+        <button class="close-btn" onclick="closeModal('playerStatsModal')">✕</button>
+      </div>
 
-  var rows = Object.keys(bands).map(function (k) { return bands[k]; })
-    .sort(function (a, b) { return a.order - b.order || a.label.localeCompare(b.label); });
+      <div class="modal-stats-grid">
+        <div class="stat-card">
+          <span class="stat-lbl">Tier</span>
+          <span class="stat-val" id="modalPlayerTier">-</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-lbl">Winrate</span>
+          <span class="stat-val highlight-cyan" id="modalPlayerWinrate">-</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-lbl">Record (W / L)</span>
+          <span class="stat-val" id="modalPlayerRecord">0W / 0L</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-lbl">ELO / Matches</span>
+          <span class="stat-val" id="modalPlayerMatches">0 ELO</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-lbl">Streak</span>
+          <span class="stat-val highlight-gold" id="modalPlayerStreak">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-lbl">Region / Device</span>
+          <span class="stat-val" id="modalPlayerMeta">-</span>
+        </div>
+      </div>
 
-  if (rows.length === 0) {
-    out.appendChild(el("div", "note", "No player matches “" + q.value.trim() + "”."));
-    return;
-  }
+      <button class="modal-close" onclick="closeModal('playerStatsModal')">Close Overview</button>
+    </div>
+  </div>
 
-  rows.forEach(function (b) {
-    b.list.sort(function (x, y) { return y.elo - x.elo || x.name.localeCompare(y.name); });
-    var band = el("section", "band");
-    var badge = el("div", "badge");
-    badge.style.background = b.bg;
-    badge.style.color = b.fg;
-    badge.appendChild(el("b", "", b.label));
-    badge.appendChild(el("span", "", b.list.length + (b.list.length === 1 ? " player" : " players")));
-    var box = el("div", "players");
-    b.list.forEach(function (p) {
-      var chip = el("span", "chip");
-      chip.appendChild(el("strong", "", p.name));
-      chip.appendChild(el("small", "", p.elo + " ELO"));
-      box.appendChild(chip);
-    });
-    band.appendChild(badge);
-    band.appendChild(box);
-    out.appendChild(band);
-  });
-}
+  <!-- 2-PLAYER COMPARISON TOOL MODAL -->
+  <div class="modal-backdrop" id="compareModal">
+    <div class="modal-box compare-modal-box">
+      <h3>⚔️ PLAYER COMPARISON</h3>
+      
+      <div class="compare-selectors">
+        <div class="selector-group">
+          <label>Player 1</label>
+          <select id="p1Select" onchange="updateComparison()"></select>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="selector-group">
+          <label>Player 2</label>
+          <select id="p2Select" onchange="updateComparison()"></select>
+        </div>
+      </div>
 
-function load() {
-  fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" })
-    .then(function (r) {
-      if (!r.ok) throw new Error("HTTP " + r.status + " – check that the file exists in the repo and that DATA_URL matches tier-sync.file.");
-      return r.json();
-    })
-    .then(function (d) {
-      players = toPlayers(d);
-      loaded = true;
-      failure = "";
-      document.getElementById("updated").textContent = "Updated " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      render();
-    })
-    .catch(function (e) {
-      failure = location.protocol === "file:"
-        ? "Browsers block loading data from a file opened on your computer. Open the page through GitHub Pages or a local server instead."
-        : String(e.message || e);
-      render();
-    });
-}
+      <div class="compare-board" id="compareBoard"></div>
 
-q.addEventListener("input", render);
-render();
-load();
-setInterval(load, REFRESH_SECONDS * 1000);
-</script>
+      <button class="modal-close" onclick="closeModal('compareModal')">Close Comparison</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
