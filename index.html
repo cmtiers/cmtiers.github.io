@@ -1,263 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CMTIERS - System Updating</title>
-  <style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CMTiers – Ranked PvP tier list</title>
+<style>
+  :root {
+    --bg: #14171c; --band: #1c2027; --line: #2a303a;
+    --text: #e9edf2; --muted: #9aa4b2; --chip: #252b35;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
     :root {
-      --bg-dark: #07090e;
-      --card-bg: rgba(18, 22, 33, 0.85);
-      --card-border: rgba(255, 255, 255, 0.1);
-      --accent-cyan: #00f2fe;
-      --accent-gold: #ffb703;
-      --accent-purple: #7928ca;
-      --text-main: #f0f2f5;
-      --text-muted: #8e9bb0;
+      --bg: #f3f5f8; --band: #ffffff; --line: #dde2ea;
+      --text: #14171c; --muted: #5b6575; --chip: #eef1f6;
+      color-scheme: light;
     }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 56rem; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+  header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: .75rem 1rem; margin-bottom: 1.25rem; }
+  h1 { margin: 0; font-size: 2rem; line-height: 1.1; font-weight: 800; letter-spacing: -.02em; }
+  header p { margin: .15rem 0 0; color: var(--muted); }
+  .meta { display: flex; gap: 1rem; color: var(--muted); font-size: .9rem; }
+  input[type=search] {
+    width: 100%; margin-bottom: 1rem; padding: .7rem .9rem; font: inherit;
+    color: var(--text); background: var(--band); border: 1px solid var(--line); border-radius: .6rem;
+  }
+  input[type=search]:focus-visible { outline: 3px solid #5fa8ff; outline-offset: 1px; }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
+  .band { display: grid; grid-template-columns: 8.5rem 1fr; background: var(--band); border: 1px solid var(--line); border-radius: .75rem; overflow: hidden; margin-bottom: .75rem; }
+  .badge { display: flex; flex-direction: column; justify-content: center; padding: .9rem 1rem; }
+  .badge b { font-size: 1.9rem; line-height: 1; font-weight: 800; letter-spacing: -.02em; }
+  .badge span { margin-top: .3rem; font-size: .85rem; opacity: .85; }
+  .players { display: flex; flex-wrap: wrap; gap: .5rem; align-content: center; padding: .9rem; }
+  .chip { display: inline-flex; align-items: baseline; gap: .5rem; padding: .35rem .7rem; background: var(--chip); border-radius: 2rem; }
+  .chip strong { font-weight: 650; overflow-wrap: anywhere; }
+  .chip small { color: var(--muted); font-variant-numeric: tabular-nums; }
 
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+  .note { padding: 1.5rem 1rem; text-align: center; color: var(--muted); background: var(--band); border: 1px dashed var(--line); border-radius: .75rem; }
+  .note.err { color: var(--text); border-style: solid; border-color: #d9534f; text-align: left; }
 
-    #bg-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .container {
-      position: relative;
-      z-index: 10;
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 40px 32px;
-      max-width: 460px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 242, 254, 0.15);
-    }
-
-    /* Animated Status Icon */
-    .icon-wrapper {
-      position: relative;
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 24px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .gear-icon {
-      font-size: 3rem;
-      animation: spin 6s linear infinite;
-      display: inline-block;
-      filter: drop-shadow(0 0 10px var(--accent-cyan));
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .brand-title {
-      font-size: 2rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: 2px;
-      margin-bottom: 8px;
-    }
-
-    .status-badge {
-      display: inline-block;
-      background: rgba(0, 242, 254, 0.1);
-      border: 1px solid rgba(0, 242, 254, 0.3);
-      color: var(--accent-cyan);
-      font-size: 0.8rem;
-      font-weight: 800;
-      padding: 4px 12px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 16px;
-    }
-
-    .message {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 28px;
-    }
-
-    /* Progress Bar */
-    .progress-box {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 12px;
-      border: 1px solid var(--card-border);
-    }
-
-    .progress-bar-bg {
-      width: 100%;
-      height: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-      border-radius: 4px;
-      transition: width 0.4s ease;
-      box-shadow: 0 0 10px var(--accent-cyan);
-    }
-
-    .progress-text {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
-
-    .discord-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 24px;
-      background: linear-gradient(135deg, #5865f2, #4752c4);
-      color: #fff;
-      text-decoration: none;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-weight: 800;
-      font-size: 0.9rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .discord-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(88, 101, 242, 0.4);
-    }
-  </style>
+  @media (max-width: 36rem) {
+    .band { grid-template-columns: 1fr; }
+    .badge { flex-direction: row; align-items: baseline; justify-content: space-between; padding: .6rem 1rem; }
+    .badge span { margin: 0; }
+    h1 { font-size: 1.7rem; }
+  }
+</style>
 </head>
 <body>
-
-  <canvas id="bg-canvas"></canvas>
-
-  <div class="container">
-    <div class="icon-wrapper">
-      <span class="gear-icon">⚙️</span>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>CMTiers</h1>
+      <p>Ranked PvP tier list</p>
     </div>
+    <div class="meta"><span id="count"></span><span id="updated"></span></div>
+  </header>
+  <input id="q" type="search" placeholder="Search players" aria-label="Search players" autocomplete="off">
+  <main id="out" aria-live="polite"></main>
+</div>
 
-    <div class="brand-title">CMTIERS</div>
-    <div class="status-badge">System Maintenance</div>
+<script>
+// ---- settings -------------------------------------------------------------
+var DATA_URL = "data.json";   // same path as tier-sync.file in the plugin's config.yml
+var ROOT = "";                // e.g. "players" if the file looks like {"players": [ ... ]}
+var REFRESH_SECONDS = 60;
 
-    <p class="message">
-      We are currently updating the leaderboard scores, rules, and server features. Check back soon!
-    </p>
+// Highest tier first. "keys" are the tier values the plugin writes (lower-case).
+// If you use tier-map in the plugin, put the site's names here (e.g. keys: ["ht1"]).
+var TIERS = [
+  { label: "S+", keys: ["s+"],            bg: "#a3141b", fg: "#ffffff" },
+  { label: "S",  keys: ["s"],             bg: "#ef5350", fg: "#14171c" },
+  { label: "A+", keys: ["a+"],            bg: "#f5a623", fg: "#14171c" },
+  { label: "A",  keys: ["a"],             bg: "#f2d94e", fg: "#14171c" },
+  { label: "B+", keys: ["b+"],            bg: "#1fa7a0", fg: "#07211f" },
+  { label: "B",  keys: ["b"],             bg: "#5fd8e6", fg: "#07211f" },
+  { label: "C+", keys: ["c+"],            bg: "#2f9e5b", fg: "#07210f" },
+  { label: "C",  keys: ["c tier", "c"],   bg: "#8fdc6e", fg: "#102507" }
+];
+var OTHER = { bg: "#6b7280", fg: "#ffffff" };
+// ---------------------------------------------------------------------------
 
+var players = [], loaded = false, failure = "";
+var out = document.getElementById("out");
+var q = document.getElementById("q");
 
-    <a href="https://discord.gg/FngWr4ZVZ" target="_blank" class="discord-btn">
-      💬 Join Discord for News
-    </a>
-  </div>
+function el(tag, cls, text) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;   // textContent: player names are never parsed as HTML
+  return e;
+}
 
-  <script>
-    // Live Progress Simulation
-    let progress = 0;
-    const fill = document.getElementById('progressFill');
-    const percentText = document.getElementById('progressPercent');
-
-    const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 8) + 2;
-      if (progress >= 92) {
-        progress = 92; // Holds near completion to indicate active updating
-        clearInterval(interval);
-      }
-      fill.style.width = progress + '%';
-      percentText.innerText = progress + '%';
-    }, 600);
-
-    // Interactive Floating Particles & Web Network Background
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+function toPlayers(d) {
+  if (ROOT) {
+    ROOT.split(".").forEach(function (k) { d = d && d[k]; });
+  }
+  var list = [];
+  if (Array.isArray(d)) {
+    list = d;
+  } else if (d && typeof d === "object") {
+    if (Array.isArray(d.players)) {
+      list = d.players;
+    } else {
+      list = Object.keys(d).map(function (k) { return Object.assign({ name: k }, d[k]); });
     }
-    window.addEventListener('resize', resize);
-    resize();
+  }
+  return list.map(function (p) {
+    return { name: String(p && p.name || "").trim(), tier: String(p && p.tier || "").trim(), elo: Number(p && p.elo) || 0 };
+  }).filter(function (p) { return p.name !== ""; });
+}
 
-    const particles = Array.from({ length: 60 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.8,
-      vy: (Math.random() - 0.5) * 0.8,
-      size: Math.random() * 2 + 1
-    }));
+function tierIndex(tier) {
+  var n = tier.toLowerCase();
+  for (var i = 0; i < TIERS.length; i++) {
+    if (TIERS[i].keys.indexOf(n) !== -1) return i;
+  }
+  return -1;
+}
 
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+function render() {
+  out.textContent = "";
+  document.getElementById("count").textContent = loaded ? players.length + (players.length === 1 ? " player" : " players") : "";
 
-      for (let i = 0; i < particles.length; i++) {
-        let p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
+  if (failure) {
+    var err = el("div", "note err");
+    err.appendChild(el("strong", "", "Couldn’t load " + DATA_URL));
+    err.appendChild(el("div", "", failure));
+    out.appendChild(err);
+    return;
+  }
+  if (!loaded) { out.appendChild(el("div", "note", "Loading…")); return; }
+  if (players.length === 0) {
+    out.appendChild(el("div", "note", "No players yet. Players appear here once they reach C Tier."));
+    return;
+  }
 
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = '#00f2fe';
-        ctx.fill();
-
-        // Draw network connections between nearby particles
-        for (let j = i + 1; j < particles.length; j++) {
-          let p2 = particles[j];
-          let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(0, 242, 254, ${1 - dist / 120 * 0.8})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      }
-      requestAnimationFrame(animate);
+  var term = q.value.trim().toLowerCase();
+  var bands = {};          // key -> { order, label, bg, fg, list }
+  players.forEach(function (p) {
+    if (term && p.name.toLowerCase().indexOf(term) === -1) return;
+    var i = tierIndex(p.tier);
+    var key = i >= 0 ? "t" + i : "o:" + p.tier.toLowerCase();
+    if (!bands[key]) {
+      bands[key] = i >= 0
+        ? { order: i, label: TIERS[i].label, bg: TIERS[i].bg, fg: TIERS[i].fg, list: [] }
+        : { order: 100, label: p.tier || "Unlisted", bg: OTHER.bg, fg: OTHER.fg, list: [] };
     }
+    bands[key].list.push(p);
+  });
 
-    animate();
-  </script>
+  var rows = Object.keys(bands).map(function (k) { return bands[k]; })
+    .sort(function (a, b) { return a.order - b.order || a.label.localeCompare(b.label); });
+
+  if (rows.length === 0) {
+    out.appendChild(el("div", "note", "No player matches “" + q.value.trim() + "”."));
+    return;
+  }
+
+  rows.forEach(function (b) {
+    b.list.sort(function (x, y) { return y.elo - x.elo || x.name.localeCompare(y.name); });
+    var band = el("section", "band");
+    var badge = el("div", "badge");
+    badge.style.background = b.bg;
+    badge.style.color = b.fg;
+    badge.appendChild(el("b", "", b.label));
+    badge.appendChild(el("span", "", b.list.length + (b.list.length === 1 ? " player" : " players")));
+    var box = el("div", "players");
+    b.list.forEach(function (p) {
+      var chip = el("span", "chip");
+      chip.appendChild(el("strong", "", p.name));
+      chip.appendChild(el("small", "", p.elo + " ELO"));
+      box.appendChild(chip);
+    });
+    band.appendChild(badge);
+    band.appendChild(box);
+    out.appendChild(band);
+  });
+}
+
+function load() {
+  fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" })
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status + " – check that the file exists in the repo and that DATA_URL matches tier-sync.file.");
+      return r.json();
+    })
+    .then(function (d) {
+      players = toPlayers(d);
+      loaded = true;
+      failure = "";
+      document.getElementById("updated").textContent = "Updated " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      render();
+    })
+    .catch(function (e) {
+      failure = location.protocol === "file:"
+        ? "Browsers block loading data from a file opened on your computer. Open the page through GitHub Pages or a local server instead."
+        : String(e.message || e);
+      render();
+    });
+}
+
+q.addEventListener("input", render);
+render();
+load();
+setInterval(load, REFRESH_SECONDS * 1000);
+</script>
 </body>
 </html>
-
