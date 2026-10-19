@@ -1,9 +1,9 @@
 // ---- settings -------------------------------------------------------------
-var DATA_URL = "players.json";   // same path as tier-sync.file in the plugin's config.yml
-var ROOT = "";                // e.g. "players" if the file looks like {"players": [ ... ]}
+var DATA_URL = "data.json";   // matches your friend's backend configuration
+var ROOT = "";                // e.g. "players" if nested inside {"players": [...]}
 var REFRESH_SECONDS = 60;
 
-// Highest tier first. "keys" are the tier values written by the plugin.
+// Tier mapping matching your friend's PHP plugin logic
 var TIERS = [
   { label: "S+", keys: ["s+"],            bg: "#a3141b", fg: "#ffffff" },
   { label: "S",  keys: ["s"],             bg: "#ef5350", fg: "#14171c" },
@@ -67,8 +67,13 @@ function tierIndex(tier) {
 }
 
 function render() {
+  if (!out) return;
   out.textContent = "";
-  document.getElementById("count").textContent = loaded ? players.length + (players.length === 1 ? " player" : " players") : "";
+  
+  var countEl = document.getElementById("count");
+  if (countEl) {
+    countEl.textContent = loaded ? players.length + (players.length === 1 ? " player" : " players") : "";
+  }
 
   if (failure) {
     var err = el("div", "note err");
@@ -77,13 +82,18 @@ function render() {
     out.appendChild(err);
     return;
   }
-  if (!loaded) { out.appendChild(el("div", "note", "Loading…")); return; }
+
+  if (!loaded) { 
+    out.appendChild(el("div", "note", "Loading…")); 
+    return; 
+  }
+
   if (players.length === 0) {
     out.appendChild(el("div", "note", "No players yet. Players appear here once they reach C Tier."));
     return;
   }
 
-  var term = q.value.trim().toLowerCase();
+  var term = q && q.value ? q.value.trim().toLowerCase() : "";
   var bands = {};
   players.forEach(function (p) {
     if (term && p.name.toLowerCase().indexOf(term) === -1 && p.tier.toLowerCase().indexOf(term) === -1) return;
@@ -101,7 +111,7 @@ function render() {
     .sort(function (a, b) { return a.order - b.order || a.label.localeCompare(b.label); });
 
   if (rows.length === 0) {
-    out.appendChild(el("div", "note", "No player matches “" + q.value.trim() + "”."));
+    out.appendChild(el("div", "note", "No player matches “" + term + "”."));
     return;
   }
 
@@ -153,7 +163,10 @@ function load() {
       players = toPlayers(d);
       loaded = true;
       failure = "";
-      document.getElementById("updated").textContent = "Updated " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      var updatedEl = document.getElementById("updated");
+      if (updatedEl) {
+        updatedEl.textContent = "Updated " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      }
       render();
     })
     .catch(function (e) {
@@ -171,20 +184,36 @@ function openPlayerModal(playerName) {
   var totalMatches = player.wins + player.losses;
   var wr = totalMatches > 0 ? Math.round((player.wins / totalMatches) * 100) + "%" : "0%";
 
-  document.getElementById('modalPlayerHead').src = player.head;
-  document.getElementById('modalPlayerName').innerText = player.name;
+  var headEl = document.getElementById('modalPlayerHead');
+  if (headEl) headEl.src = player.head;
+  
+  var nameEl = document.getElementById('modalPlayerName');
+  if (nameEl) nameEl.innerText = player.name;
   
   var roleBadge = '';
   if (player.role === 'ADMIN') roleBadge = '<span class="badge-admin">ADMIN</span>';
   if (player.role === 'MOD') roleBadge = '<span class="badge-mod">MOD</span>';
-  document.getElementById('modalPlayerBadges').innerHTML = roleBadge;
+  
+  var badgesEl = document.getElementById('modalPlayerBadges');
+  if (badgesEl) badgesEl.innerHTML = roleBadge;
 
-  document.getElementById('modalPlayerTier').innerText = player.tier;
-  document.getElementById('modalPlayerWinrate').innerText = wr;
-  document.getElementById('modalPlayerRecord').innerText = player.wins + "W / " + player.losses + "L";
-  document.getElementById('modalPlayerMatches').innerText = player.elo + " ELO";
-  document.getElementById('modalPlayerStreak').innerText = "🔥 " + player.streak;
-  document.getElementById('modalPlayerMeta').innerText = player.region + " • " + player.device;
+  var tierEl = document.getElementById('modalPlayerTier');
+  if (tierEl) tierEl.innerText = player.tier;
+
+  var eloEl = document.getElementById('modalPlayerElo');
+  if (eloEl) eloEl.innerText = player.elo + " ELO";
+
+  var wrEl = document.getElementById('modalPlayerWinrate');
+  if (wrEl) wrEl.innerText = wr;
+
+  var recordEl = document.getElementById('modalPlayerRecord');
+  if (recordEl) recordEl.innerText = player.wins + "W / " + player.losses + "L";
+
+  var streakEl = document.getElementById('modalPlayerStreak');
+  if (streakEl) streakEl.innerText = "🔥 " + player.streak;
+
+  var metaEl = document.getElementById('modalPlayerMeta');
+  if (metaEl) metaEl.innerText = player.region + " • " + player.device;
 
   openModal('playerStatsModal');
 }
@@ -205,8 +234,12 @@ function initComparisonSelects() {
 }
 
 function updateComparison() {
-  var p1Name = document.getElementById('p1Select').value;
-  var p2Name = document.getElementById('p2Select').value;
+  var p1El = document.getElementById('p1Select');
+  var p2El = document.getElementById('p2Select');
+  if (!p1El || !p2El) return;
+
+  var p1Name = p1El.value;
+  var p2Name = p2El.value;
 
   var p1 = players.find(function(p) { return p.name === p1Name; });
   var p2 = players.find(function(p) { return p.name === p2Name; });
@@ -356,13 +389,17 @@ var drawer = document.getElementById('drawer');
 var drawerOverlay = document.getElementById('drawerOverlay');
 
 function openDrawer() {
-  drawer.classList.add('active');
-  drawerOverlay.classList.add('active');
+  if (drawer && drawerOverlay) {
+    drawer.classList.add('active');
+    drawerOverlay.classList.add('active');
+  }
 }
 
 function closeDrawer() {
-  drawer.classList.remove('active');
-  drawerOverlay.classList.remove('active');
+  if (drawer && drawerOverlay) {
+    drawer.classList.remove('active');
+    drawerOverlay.classList.remove('active');
+  }
 }
 
 function scrollToLeaderboard() {
@@ -546,6 +583,10 @@ function triggerCornerSmoke() {
   }
 
   animateSmoke();
+}
+
+if (q) {
+  q.addEventListener("input", render);
 }
 
 render();
