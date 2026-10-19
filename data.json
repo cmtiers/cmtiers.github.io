@@ -8,5 +8,10 @@
         "name": "Common",
         "tier": "C Tier",
         "elo": 125
+    },
+    {
+        "name": "RealSTON",
+        "tier": "C Tier",
+        "elo": 100
     }
 ]
