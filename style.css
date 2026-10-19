@@ -539,14 +539,14 @@ input[type=search]:focus-visible {
 .modal-box h3 {
   font-family: 'Orbitron', sans-serif;
   color: var(--accent-gold);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 14px;
 }
 
 .modal-box p {
   color: var(--muted);
   line-height: 1.6;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
 }
 
 .modal-close {
