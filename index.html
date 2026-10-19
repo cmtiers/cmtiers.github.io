@@ -97,19 +97,30 @@
     <main id="out" aria-live="polite"></main>
   </div>
 
-  <!-- MODALS -->
+  <!-- EXPANDED RULES MODAL -->
   <div class="modal-backdrop" id="rulesModal">
     <div class="modal-box">
-      <h3>📜 Rules</h3>
-      <p>1. All official ranking duels are First To 7 Wins (FT7).<br>2. Full screen recordings must be submitted to Discord.<br>3. Hacks, modifications, or illegal client patches result in an instant ladder ban.</p>
+      <h3>📜 OFFICIAL SERVER & LEADERBOARD RULES</h3>
+      <p>
+        <b>1. In-Game Automatic Tracking:</b> All player stats, kills, deaths, and win streaks are calculated live from our MCPE 0.15.10 PocketMine server. Whenever a player dies in combat, the server plugin verifies the kill and syncs the score instantly to this site.<br><br>
+        <b>2. Fair Play & Modded Clients:</b> Hacks, reach modifications, auto-clickers, macro tools, or illegitimate client patches are strictly banned. Any player caught abusing glitches will face a permanent global ELO wipe and an IP ban from the server.<br><br>
+        <b>3. Kill Farming & Exploits:</b> Intentionally killing alternate accounts (alts), AFK players, or trading kills to boost ELO points is prohibited. Suspicious match records are audited by server staff.<br><br>
+        <b>4. Screen Recording Verification:</b> High-tier official duels (FT7) require full unedited screen recordings to be submitted to our official Discord server upon staff request.
+      </p>
       <button class="modal-close" onclick="closeModal('rulesModal')">Understood</button>
     </div>
   </div>
 
+  <!-- EXPANDED HOW RANKINGS WORK MODAL -->
   <div class="modal-backdrop" id="rankingsModal">
     <div class="modal-box">
-      <h3>📈 How Rankings Work</h3>
-      <p>Challenge players ranked above you in FT7 duels. Winning automatically swaps your ladder position. Tiers update dynamically based on your overall rank placement.</p>
+      <h3>📈 HOW RANKINGS & ELO WORK</h3>
+      <p>
+        <b>1. Real-Time Server Sync:</b> As soon as you land a final hit on an enemy player inside the server, the server plugin pushes your updated kill count and win streak directly to GitHub Pages.<br><br>
+        <b>2. Dynamic Tier Progression:</b> Tiers are sorted automatically based on your overall ELO rating and total kills. Earning enough points upgrades your rank badge automatically from <b>C Tier</b> all the way up to <b>S+ Tier</b>.<br><br>
+        <b>3. Kill Streaks & Multipliers:</b> Maintaining a continuous win streak without dying grants extra ELO points per kill, making high-tier ladder pushes faster.<br><br>
+        <b>4. Instant Leaderboard Re-sorting:</b> The site automatically re-calculates player ranks every time the data updates, displaying real-time movements across all tiers.
+      </p>
       <button class="modal-close" onclick="closeModal('rankingsModal')">Got It</button>
     </div>
   </div>
@@ -117,7 +128,7 @@
   <div class="modal-backdrop" id="achievementsModal">
     <div class="modal-box">
       <h3>🏆 Titles & Achievements</h3>
-      <p>• <b>UHC Warlord:</b> Rank #1 Spot<br>• <b>Flawless Victory:</b> 7-0 Match Sweep<br>• <b>Mobile Titan:</b> Rank #1 on Mobile Device</p>
+      <p>• <b>UHC Warlord:</b> Rank #1 Spot on the Leaderboard<br>• <b>Flawless Victory:</b> 7-0 Match Sweep in official duels<br>• <b>Mobile Titan:</b> Rank #1 on Mobile Devices</p>
       <button class="modal-close" onclick="closeModal('achievementsModal')">Close</button>
     </div>
   </div>
@@ -148,7 +159,7 @@
           <span class="stat-val" id="modalPlayerRecord">0W / 0L</span>
         </div>
         <div class="stat-card">
-          <span class="stat-lbl">ELO / Matches</span>
+          <span class="stat-lbl">ELO Rating</span>
           <span class="stat-val" id="modalPlayerMatches">0 ELO</span>
         </div>
         <div class="stat-card">
