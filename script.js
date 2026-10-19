@@ -1,7 +1,7 @@
 // ---- settings -------------------------------------------------------------
 var DATA_URL = "data.json";   // matches your friend's backend configuration
 var ROOT = "";                // e.g. "players" if nested inside {"players": [...]}
-var REFRESH_SECONDS = 300;
+var REFRESH_SECONDS = 300;    // refreshes every 5 minutes
 
 // Tier mapping matching your friend's PHP plugin logic
 var TIERS = [
@@ -351,11 +351,20 @@ function playSmokeExplosionSound() {
   } catch (e) {}
 }
 
-// 10-SECOND LOCK TIMER
-var totalSecs = 10; 
-var unlocked = false;
+// 72-HOUR CONTINUOUS LOCK TIMER
+var LOCK_DURATION = 72 * 60 * 60; // 72 hours in seconds (259,200s)
+var unlockTimestamp = localStorage.getItem('cmtiers_unlock_time');
+
+if (!unlockTimestamp) {
+  unlockTimestamp = Date.now() + (LOCK_DURATION * 1000);
+  localStorage.setItem('cmtiers_unlock_time', unlockTimestamp);
+}
 
 function updateLockTimer() {
+  var now = Date.now();
+  var remainingMs = unlockTimestamp - now;
+  var totalSecs = Math.max(0, Math.floor(remainingMs / 1000));
+
   var h = Math.floor(totalSecs / 3600);
   var m = Math.floor((totalSecs % 3600) / 60);
   var s = totalSecs % 60;
@@ -368,20 +377,19 @@ function updateLockTimer() {
   if (minsEl) minsEl.innerText = String(m).padStart(2, '0');
   if (secsEl) secsEl.innerText = String(s).padStart(2, '0');
 
-  if (totalSecs > 0) {
-    totalSecs--;
-  } else if (!unlocked) {
-    unlocked = true;
+  if (totalSecs <= 0) {
     var lock = document.getElementById('timer-lockscreen');
-    if (lock) lock.classList.add('unlocked');
-    
-    document.body.classList.add('unlocked-scroll');
-    playSmokeExplosionSound();
-    triggerCornerSmoke();
+    if (lock && !lock.classList.contains('unlocked')) {
+      lock.classList.add('unlocked');
+      document.body.classList.add('unlocked-scroll');
+      playSmokeExplosionSound();
+      triggerCornerSmoke();
+    }
   }
 }
 
 setInterval(updateLockTimer, 1000);
+updateLockTimer();
 
 var openMenuBtn = document.getElementById('openMenuBtn');
 var closeMenuBtn = document.getElementById('closeMenuBtn');
