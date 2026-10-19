@@ -1,7 +1,7 @@
 // ---- settings -------------------------------------------------------------
 var DATA_URL = "data.json";   // matches your friend's backend configuration
 var ROOT = "";                // e.g. "players" if nested inside {"players": [...]}
-var REFRESH_SECONDS = 60;
+var REFRESH_SECONDS = 300;
 
 // Tier mapping matching your friend's PHP plugin logic
 var TIERS = [
