@@ -18,5 +18,10 @@
         "name": "VexServin",
         "tier": "C Tier",
         "elo": 100
+    },
+    {
+        "name": "Meadow",
+        "tier": "C Tier",
+        "elo": 100
     }
 ]
