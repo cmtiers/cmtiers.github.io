@@ -27,14 +27,14 @@
   <!-- Corner Smoke FX Canvas -->
   <canvas id="smoke-canvas"></canvas>
 
-  <!-- 10-SECOND LOCK OVERLAY -->
+  <!-- 72-HOUR CONTINUOUS LOCK OVERLAY -->
   <div id="timer-lockscreen">
     <div class="lock-title">CMTIERS UPDATE UNLOCK</div>
     <div class="lock-subtitle">Leaderboard Unlocks In</div>
     
     <div class="clock-display">
       <div class="clock-box">
-        <div class="clock-val" id="hrs">00</div>
+        <div class="clock-val" id="hrs">72</div>
         <div class="clock-lbl">Hours</div>
       </div>
       <div class="clock-sep">:</div>
@@ -44,7 +44,7 @@
       </div>
       <div class="clock-sep">:</div>
       <div class="clock-box">
-        <div class="clock-val" id="secs">10</div>
+        <div class="clock-val" id="secs">00</div>
         <div class="clock-lbl">Secs</div>
       </div>
     </div>
@@ -119,7 +119,7 @@
         <b>1. Real-Time Server Sync:</b> As soon as you kill a player inside the server, the server plugin calculates your new ELO points and pushes the update directly to the website database (`data.json`).<br><br>
         <b>2. Tier Bands (C to S+):</b> Players are grouped automatically into tier bands based on their current rating. Increasing your ELO moves you higher across the tier bands (from <b>C</b> up to <b>S+</b>).<br><br>
         <b>3. Automatic ELO Sorting:</b> Inside each tier band, players are ordered from highest to lowest ELO rating.<br><br>
-        <b>4. Auto-Refresh:</b> The website polls for updates every 60 seconds and updates your standings automatically without needing to refresh your browser.
+        <b>4. Auto-Refresh:</b> The website polls for updates every 5 minutes and updates your standings automatically without needing to refresh your browser.
       </p>
       <button class="modal-close" onclick="closeModal('rankingsModal')">Got It</button>
     </div>
