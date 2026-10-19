@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>CMTIERS - Ranked PvP Tier List & Leaderboard</title>
-  <meta name="description" content="Official competitive ranking ladder and UHC tier list for MCPE 0.15.10 PvP. View real-time player standings, FT7 duel records, region stats, and tier classifications.">
+  <meta name="description" content="Official competitive ranking ladder and UHC tier list for MCPE 0.15.10 PvP. View real-time player standings, ELO ratings, and tier classifications.">
   <meta name="keywords" content="MCPE 0.15.10, CMTIERS, MCPE PvP Tier List, UHC Tier List, Minecraft Pocket Edition PvP, PocketMine PvP Rankings">
   <meta name="author" content="CMTIERS">
 
   <meta property="og:title" content="CMTIERS - MCPE 0.15.10 UHC Tier List">
-  <meta property="og:description" content="Official ladder rankings and competitive UHC tiers for MCPE 0.15.10. Check top players, winrates, and challenge rules.">
+  <meta property="og:description" content="Official ladder rankings and competitive UHC tiers for MCPE 0.15.10. Check top players, ELO points, and challenge rules.">
   <meta property="og:type" content="website">
 
   <!-- Modern Fonts -->
@@ -92,7 +92,7 @@
       <div class="meta"><span id="count"></span><span id="updated"></span></div>
     </header>
 
-    <input id="q" type="search" placeholder="Search players or tier..." aria-label="Search players" autocomplete="off" oninput="render()">
+    <input id="q" type="search" placeholder="Search players" aria-label="Search players" autocomplete="off">
 
     <main id="out" aria-live="polite"></main>
   </div>
@@ -102,10 +102,10 @@
     <div class="modal-box">
       <h3>📜 OFFICIAL SERVER & LEADERBOARD RULES</h3>
       <p>
-        <b>1. In-Game Automatic Tracking:</b> All player stats, kills, deaths, and win streaks are calculated live from our MCPE 0.15.10 PocketMine server. Whenever a player dies in combat, the server plugin verifies the kill and syncs the score instantly to this site.<br><br>
-        <b>2. Fair Play & Modded Clients:</b> Hacks, reach modifications, auto-clickers, macro tools, or illegitimate client patches are strictly banned. Any player caught abusing glitches will face a permanent global ELO wipe and an IP ban from the server.<br><br>
-        <b>3. Kill Farming & Exploits:</b> Intentionally killing alternate accounts (alts), AFK players, or trading kills to boost ELO points is prohibited. Suspicious match records are audited by server staff.<br><br>
-        <b>4. Screen Recording Verification:</b> High-tier official duels (FT7) require full unedited screen recordings to be submitted to our official Discord server upon staff request.
+        <b>1. Real-Time In-Game Tracking:</b> All player stats, kills, deaths, and ELO ratings are registered live from our MCPE 0.15.10 PocketMine server. Whenever a kill is completed in-game, the server plugin verifies the match result and updates this website immediately.<br><br>
+        <b>2. Fair Play & Modded Clients:</b> Hacks, reach modifications, auto-clickers, macro tools, or illegal client patches are strictly prohibited. Any player caught utilizing illicit modifications will face a permanent global ELO wipe and server ban.<br><br>
+        <b>3. Kill Farming & Exploits:</b> Intentionally killing alternate accounts (alts), AFK players, or trading kills to boost ELO points or reach higher tier bands is banned. Suspicious match histories are audited by server staff.<br><br>
+        <b>4. Screen Recording Verification:</b> Official competitive duels require full, unedited screen recordings to be submitted to our Discord server upon staff request.
       </p>
       <button class="modal-close" onclick="closeModal('rulesModal')">Understood</button>
     </div>
@@ -116,10 +116,10 @@
     <div class="modal-box">
       <h3>📈 HOW RANKINGS & ELO WORK</h3>
       <p>
-        <b>1. Real-Time Server Sync:</b> As soon as you land a final hit on an enemy player inside the server, the server plugin pushes your updated kill count and win streak directly to GitHub Pages.<br><br>
-        <b>2. Dynamic Tier Progression:</b> Tiers are sorted automatically based on your overall ELO rating and total kills. Earning enough points upgrades your rank badge automatically from <b>C Tier</b> all the way up to <b>S+ Tier</b>.<br><br>
-        <b>3. Kill Streaks & Multipliers:</b> Maintaining a continuous win streak without dying grants extra ELO points per kill, making high-tier ladder pushes faster.<br><br>
-        <b>4. Instant Leaderboard Re-sorting:</b> The site automatically re-calculates player ranks every time the data updates, displaying real-time movements across all tiers.
+        <b>1. Real-Time Server Sync:</b> As soon as you kill a player inside the server, the server plugin calculates your new ELO points and pushes the update directly to the website database (`data.json`).<br><br>
+        <b>2. Tier Bands (C to S+):</b> Players are grouped automatically into tier bands based on their current rating. Increasing your ELO moves you higher across the tier bands (from <b>C</b> up to <b>S+</b>).<br><br>
+        <b>3. Automatic ELO Sorting:</b> Inside each tier band, players are ordered from highest to lowest ELO rating.<br><br>
+        <b>4. Auto-Refresh:</b> The website polls for updates every 60 seconds and updates your standings automatically without needing to refresh your browser.
       </p>
       <button class="modal-close" onclick="closeModal('rankingsModal')">Got It</button>
     </div>
@@ -128,7 +128,7 @@
   <div class="modal-backdrop" id="achievementsModal">
     <div class="modal-box">
       <h3>🏆 Titles & Achievements</h3>
-      <p>• <b>UHC Warlord:</b> Rank #1 Spot on the Leaderboard<br>• <b>Flawless Victory:</b> 7-0 Match Sweep in official duels<br>• <b>Mobile Titan:</b> Rank #1 on Mobile Devices</p>
+      <p>• <b>UHC Warlord:</b> Rank #1 Spot on S+ Tier<br>• <b>Flawless Victory:</b> 7-0 Match Sweep in official duels<br>• <b>Mobile Titan:</b> Rank #1 on Mobile Devices</p>
       <button class="modal-close" onclick="closeModal('achievementsModal')">Close</button>
     </div>
   </div>
@@ -151,16 +151,16 @@
           <span class="stat-val" id="modalPlayerTier">-</span>
         </div>
         <div class="stat-card">
+          <span class="stat-lbl">ELO Points</span>
+          <span class="stat-val highlight-cyan" id="modalPlayerElo">0 ELO</span>
+        </div>
+        <div class="stat-card">
           <span class="stat-lbl">Winrate</span>
-          <span class="stat-val highlight-cyan" id="modalPlayerWinrate">-</span>
+          <span class="stat-val" id="modalPlayerWinrate">-</span>
         </div>
         <div class="stat-card">
           <span class="stat-lbl">Record (W / L)</span>
           <span class="stat-val" id="modalPlayerRecord">0W / 0L</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-lbl">ELO Rating</span>
-          <span class="stat-val" id="modalPlayerMatches">0 ELO</span>
         </div>
         <div class="stat-card">
           <span class="stat-lbl">Streak</span>
