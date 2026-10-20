@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>CMTIERS - Ranked PvP Tier List & Leaderboard</title>
   <meta name="description" content="Official competitive ranking ladder and UHC tier list for MCPE 0.15.10 PvP. View real-time player standings, ELO ratings, and tier classifications.">
-  <meta name="keywords" content="MCPE 0.15.10, CMTIERS, MCPE PvP Tier List, UHC Tier List, Minecraft Pocket Edition PvP, PocketMine PvP Rankings,pvp, cmtiers, mcpe 0.15.10, rankings, tiers, tesing ">
+  <meta name="keywords" content="cmtiers, cm tiers, mcpe 0.15.10 pvp, mcpe 0.15.10 tier list, uhc tier list mcpe, minecraft pocket edition pvp rankings, pocketmine pvp server, cmtiers github io, mcpe pvp leaderboard, mobile pvp tier list, 0.15.10 server ip, mcpe 0.15.10 server, cmtiers pvp, pocketmine uhc plugin, mcpe leaderboard website, mcpe 0.15.10 clans, pvp rating ladder mcpe, minecraft bedrock pvp tier list">
   <meta name="author" content="CMTIERS">
 
   <meta property="og:title" content="CMTIERS - MCPE 0.15.10 UHC Tier List">
@@ -27,36 +27,28 @@
   <!-- Corner Smoke FX Canvas -->
   <canvas id="smoke-canvas"></canvas>
 
-  <!-- 72-HOUR CONTINUOUS LOCK OVERLAY -->
-  <div id="timer-lockscreen">
-    <div class="lock-title">CMTIERS UPDATE UNLOCK</div>
-    <div class="lock-subtitle">Leaderboard Unlocks In</div>
-    
-    <div class="clock-display">
-      <div class="clock-box">
-        <div class="clock-val" id="hrs">72</div>
-        <div class="clock-lbl">Hours</div>
-      </div>
-      <div class="clock-sep">:</div>
-      <div class="clock-box">
-        <div class="clock-val" id="mins">00</div>
-        <div class="clock-lbl">Mins</div>
-      </div>
-      <div class="clock-sep">:</div>
-      <div class="clock-box">
-        <div class="clock-val" id="secs">00</div>
-        <div class="clock-lbl">Secs</div>
-      </div>
-    </div>
-  </div>
-
   <!-- NAVBAR -->
   <div class="navbar">
     <div class="brand">
       <span>CMTIERS</span>
     </div>
     <div class="nav-actions">
+      <!-- Country Flag Language Selector -->
+      <div class="lang-selector">
+        <select id="langSelect" onchange="translateSite(this.value)" aria-label="Language Selector">
+          <option value="en">🇺🇸 EN</option>
+          <option value="fr">🇫🇷 FR</option>
+          <option value="es">🇪🇸 ES</option>
+          <option value="pt">🇧🇷 PT</option>
+          <option value="ru">🇷🇺 RU</option>
+          <option value="ja">🇯🇵 JA</option>
+        </select>
+      </div>
+
+      <div class="offline-badge" id="topOfflineBadge">🔴 OFFLINE</div>
       <button class="theme-btn" id="themeToggleBtn" aria-label="Toggle Theme">🌙</button>
+      
+      <!-- HAMBURGER MENU BUTTON -->
       <button class="menu-trigger" id="openMenuBtn" aria-label="Open Navigation">
         <span></span>
         <span></span>
@@ -74,6 +66,7 @@
     </div>
     <ul class="drawer-nav">
       <li><button onclick="scrollToLeaderboard()">🏠 Leaderboard</button></li>
+      <li><button onclick="openModal('tiersGuideModal')">🏆 Tier List Guide (C - S+)</button></li>
       <li><button onclick="openModal('compareModal')">⚔️ Compare Players</button></li>
       <li><button onclick="openModal('rulesModal')">📜 Rules</button></li>
       <li><button onclick="openModal('rankingsModal')">📈 How Rankings Work</button></li>
@@ -89,42 +82,94 @@
         <h1>CMTiers</h1>
         <p>Ranked PvP tier list</p>
       </div>
-      <div class="meta"><span id="count"></span><span id="updated"></span></div>
+      <div class="meta">
+        <div class="stat-badge-box">
+          <span class="stat-badge-val" id="rankedCountDisplay">0</span>
+          <span class="stat-badge-lbl">Ranked Players</span>
+        </div>
+        <div class="stat-badge-box">
+          <span class="stat-badge-val" id="topEloDisplay">0</span>
+          <span class="stat-badge-lbl">Peak ELO</span>
+        </div>
+      </div>
     </header>
+
+    <!-- SERVER OFFLINE STATUS BANNER -->
+    <div class="offline-banner" id="mainOfflineBanner">
+      <div class="offline-icon">🔴</div>
+      <div class="offline-text">
+        <h3>SERVER IS CURRENTLY OFFLINE</h3>
+        <p>Leaderboard data sync is paused until the PocketMine server goes live.</p>
+      </div>
+    </div>
 
     <input id="q" type="search" placeholder="Search players" aria-label="Search players" autocomplete="off">
 
     <main id="out" aria-live="polite"></main>
+
+    <!-- FOOTER WITH CMTIERS COPYRIGHT & MOJANG DISCLAIMER -->
+    <footer class="site-footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="footer-logo">CMTIERS</span>
+          <p>© 2026 CMTiers. All rights reserved.</p>
+          <p class="mojang-disclaimer">Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.</p>
+        </div>
+        <div class="footer-status">
+          <span class="status-dot"></span>
+          <span class="status-text">System Status: Active Sync</span>
+        </div>
+      </div>
+    </footer>
   </div>
 
-  <!-- EXPANDED RULES MODAL -->
+  <!-- TIER LIST GUIDE MODAL (C to S+) -->
+  <div class="modal-backdrop" id="tiersGuideModal">
+    <div class="modal-box">
+      <h3>🏆 TIER LIST HIERARCHY (C TO S+)</h3>
+      <div class="tiers-list-guide">
+        <div class="tier-guide-item" style="border-left-color: #a3141b;"><b>S+ Tier</b><span>Elite Grandmasters (1600+ ELO)</span></div>
+        <div class="tier-guide-item" style="border-left-color: #ef5350;"><b>S Tier</b><span>Master Tier PvP Champions (1450+ ELO)</span></div>
+        <div class="tier-guide-item" style="border-left-color: #f5a623;"><b>A+ Tier</b><span>Expert Competitors (1300+ ELO)</span></div>
+        <div class="tier-guide-item" style="border-left-color: #f2d94e;"><b>A Tier</b><span>Advanced Fighters (1200+ ELO)</span></div>
+        <div class="tier-guide-item" style="border-left-color: #1fa7a0;"><b>B+ Tier</b><span>Skilled Regulars (1100+ ELO)</span></div>
+        <div class="tier-guide-item" style="border-left-color: #5fd8e6;"><b>B Tier</b><span>Intermediate Players (1000+ ELO)</span></div>
+        <div class="tier-guide-item" style="border-left-color: #2f9e5b;"><b>C+ Tier</b><span>Rising Contenders (900+ ELO)</span></div>
+        <div class="tier-guide-item" style="border-left-color: #8fdc6e;"><b>C Tier</b><span>Base Competitive Entry (0+ ELO)</span></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('tiersGuideModal')">Close Guide</button>
+    </div>
+  </div>
+
+  <!-- RULES MODAL -->
   <div class="modal-backdrop" id="rulesModal">
     <div class="modal-box">
       <h3>📜 OFFICIAL SERVER & LEADERBOARD RULES</h3>
       <p>
-        <b>1. Real-Time In-Game Tracking:</b> All player stats, kills, deaths, and ELO ratings are registered live from our MCPE 0.15.10 PocketMine server. Whenever a kill is completed in-game, the server plugin verifies the match result and updates this website immediately.<br><br>
-        <b>2. Fair Play & Modded Clients:</b> Hacks, reach modifications, auto-clickers, macro tools, or illegal client patches are strictly prohibited. Any player caught utilizing illicit modifications will face a permanent global ELO wipe and server ban.<br><br>
-        <b>3. Kill Farming & Exploits:</b> Intentionally killing alternate accounts (alts), AFK players, or trading kills to boost ELO points or reach higher tier bands is banned. Suspicious match histories are audited by server staff.<br><br>
-        <b>4. Screen Recording Verification:</b> Official competitive duels require full, unedited screen recordings to be submitted to our Discord server upon staff request.
+        <b>1. Real-Time In-Game Tracking:</b> All player stats, kills, deaths, and ELO ratings are registered live from our MCPE 0.15.10 PocketMine server.<br><br>
+        <b>2. Fair Play & Modded Clients:</b> Hacks, reach modifications, auto-clickers, macro tools, or illegal client patches are strictly prohibited.<br><br>
+        <b>3. Kill Farming & Exploits:</b> Intentionally killing alternate accounts (alts), AFK players, or trading kills to boost ELO points is banned.<br><br>
+        <b>4. Screen Recording Verification:</b> Official competitive duels require full, unedited screen recordings to be submitted upon staff request.
       </p>
       <button class="modal-close" onclick="closeModal('rulesModal')">Understood</button>
     </div>
   </div>
 
-  <!-- EXPANDED HOW RANKINGS WORK MODAL -->
+  <!-- HOW RANKINGS WORK MODAL -->
   <div class="modal-backdrop" id="rankingsModal">
     <div class="modal-box">
       <h3>📈 HOW RANKINGS & ELO WORK</h3>
       <p>
-        <b>1. Real-Time Server Sync:</b> As soon as you kill a player inside the server, the server plugin calculates your new ELO points and pushes the update directly to the website database (`data.json`).<br><br>
-        <b>2. Tier Bands (C to S+):</b> Players are grouped automatically into tier bands based on their current rating. Increasing your ELO moves you higher across the tier bands (from <b>C</b> up to <b>S+</b>).<br><br>
-        <b>3. Automatic ELO Sorting:</b> Inside each tier band, players are ordered from highest to lowest ELO rating.<br><br>
-        <b>4. Auto-Refresh:</b> The website polls for updates every 5 minutes and updates your standings automatically without needing to refresh your browser.
+        <b>1. Real-Time Server Sync:</b> Killing a player inside the server calculates new ELO points and pushes the update directly to `data.json`.<br><br>
+        <b>2. Tier Bands (C to S+):</b> Players are grouped automatically into tier bands based on rating.<br><br>
+        <b>3. Automatic ELO Sorting:</b> Inside each band, players are ordered from highest to lowest ELO rating.<br><br>
+        <b>4. Auto-Refresh:</b> Website polls for updates every 5 minutes to keep standings fresh.
       </p>
       <button class="modal-close" onclick="closeModal('rankingsModal')">Got It</button>
     </div>
   </div>
 
+  <!-- TITLES & ACHIEVEMENTS MODAL -->
   <div class="modal-backdrop" id="achievementsModal">
     <div class="modal-box">
       <h3>🏆 Titles & Achievements</h3>
