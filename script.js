@@ -1,9 +1,8 @@
 // ---- settings -------------------------------------------------------------
-var DATA_URL = "data.json";   // matches your friend's backend configuration
-var ROOT = "";                // e.g. "players" if nested inside {"players": [...]}
-var REFRESH_SECONDS = 300;    // refreshes every 5 minutes
+var DATA_URL = "data.json";   
+var ROOT = "";                
+var REFRESH_SECONDS = 300;    
 
-// Tier mapping matching your friend's PHP plugin logic
 var TIERS = [
   { label: "S+", keys: ["s+"],            bg: "#a3141b", fg: "#ffffff" },
   { label: "S",  keys: ["s"],             bg: "#ef5350", fg: "#14171c" },
@@ -15,9 +14,10 @@ var TIERS = [
   { label: "C",  keys: ["c tier", "c"],   bg: "#8fdc6e", fg: "#102507" }
 ];
 var OTHER = { bg: "#6b7280", fg: "#ffffff" };
-// ---------------------------------------------------------------------------
 
-var players = [], loaded = false, failure = "";
+var players = [];
+var loaded = false;
+var failure = "";
 var out = document.getElementById("out");
 var q = document.getElementById("q");
 
@@ -29,9 +29,6 @@ function el(tag, cls, text) {
 }
 
 function toPlayers(d) {
-  if (ROOT) {
-    ROOT.split(".").forEach(function (k) { d = d && d[k]; });
-  }
   var list = [];
   if (Array.isArray(d)) {
     list = d;
@@ -42,6 +39,7 @@ function toPlayers(d) {
       list = Object.keys(d).map(function (k) { return Object.assign({ name: k }, d[k]); });
     }
   }
+
   return list.map(function (p) {
     return {
       name: String(p && p.name || "").trim(),
@@ -53,7 +51,7 @@ function toPlayers(d) {
       region: String(p && p.region || "EU"),
       device: String(p && p.device || "PC"),
       role: String(p && p.role || ""),
-      head: String(p && p.head || "https://mc-heads.net/avatar/MHF_Steve/28")
+      head: String(p && p.head || "https://mc-heads.net/avatar/" + (p && p.name ? p.name : "MHF_Steve") + "/28")
     };
   }).filter(function (p) { return p.name !== ""; });
 }
@@ -70,26 +68,28 @@ function render() {
   if (!out) return;
   out.textContent = "";
   
-  var countEl = document.getElementById("count");
-  if (countEl) {
-    countEl.textContent = loaded ? players.length + (players.length === 1 ? " player" : " players") : "";
+  var rankedCountEl = document.getElementById("rankedCountDisplay");
+  var topEloEl = document.getElementById("topEloDisplay");
+  var offlineBanner = document.getElementById("mainOfflineBanner");
+  var topOfflineBadge = document.getElementById("topOfflineBadge");
+
+  if (rankedCountEl) rankedCountEl.textContent = players.length;
+
+  var maxElo = players.length > 0 ? Math.max.apply(null, players.map(function(p){ return p.elo; })) : 0;
+  if (topEloEl) topEloEl.textContent = maxElo;
+
+  if (loaded && players.length > 0) {
+    if (offlineBanner) offlineBanner.style.display = "none";
+    if (topOfflineBadge) {
+      topOfflineBadge.textContent = "🟢 ONLINE";
+      topOfflineBadge.style.background = "rgba(52, 211, 153, 0.15)";
+      topOfflineBadge.style.borderColor = "rgba(52, 211, 153, 0.4)";
+      topOfflineBadge.style.color = "#34d399";
+    }
   }
 
-  if (failure) {
-    var err = el("div", "note err");
-    err.appendChild(el("strong", "", "Couldn’t load " + DATA_URL));
-    err.appendChild(el("div", "", failure));
-    out.appendChild(err);
-    return;
-  }
-
-  if (!loaded) { 
-    out.appendChild(el("div", "note", "Loading…")); 
-    return; 
-  }
-
-  if (players.length === 0) {
-    out.appendChild(el("div", "note", "No players yet. Players appear here once they reach C Tier."));
+  if (failure || players.length === 0) {
+    out.appendChild(el("div", "note", "Server is offline or data.json is empty. Standings will appear once players are synced from the server."));
     return;
   }
 
@@ -110,11 +110,6 @@ function render() {
   var rows = Object.keys(bands).map(function (k) { return bands[k]; })
     .sort(function (a, b) { return a.order - b.order || a.label.localeCompare(b.label); });
 
-  if (rows.length === 0) {
-    out.appendChild(el("div", "note", "No player matches “" + term + "”."));
-    return;
-  }
-
   rows.forEach(function (b) {
     b.list.sort(function (x, y) { return y.elo - x.elo || x.name.localeCompare(y.name); });
     var band = el("section", "band");
@@ -131,6 +126,11 @@ function render() {
         openPlayerModal(p.name);
         triggerCardBlast(e);
       });
+
+      var headImg = el("img");
+      headImg.src = p.head;
+      headImg.alt = p.name;
+      chip.appendChild(headImg);
       
       var strong = el("strong", "", p.name);
       chip.appendChild(strong);
@@ -156,23 +156,19 @@ function render() {
 function load() {
   fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" })
     .then(function (r) {
-      if (!r.ok) throw new Error("HTTP " + r.status + " – check that " + DATA_URL + " exists in repository.");
+      if (!r.ok) throw new Error("HTTP " + r.status);
       return r.json();
     })
     .then(function (d) {
       players = toPlayers(d);
       loaded = true;
       failure = "";
-      var updatedEl = document.getElementById("updated");
-      if (updatedEl) {
-        updatedEl.textContent = "Updated " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      }
       render();
     })
-    .catch(function (e) {
-      failure = location.protocol === "file:"
-        ? "Browsers block loading data from a local file. Host on GitHub Pages to test live."
-        : String(e.message || e);
+    .catch(function () {
+      players = [];
+      loaded = true;
+      failure = "offline";
       render();
     });
 }
@@ -284,21 +280,21 @@ function triggerCardBlast(e) {
   var x = e.clientX - rect.left;
   var y = e.clientY - rect.top;
 
-  for (var i = 0; i < 12; i++) {
+  for (var i = 0; i < 10; i++) {
     var particle = document.createElement('div');
     particle.style.position = 'absolute';
     particle.style.left = x + 'px';
     particle.style.top = y + 'px';
-    particle.style.width = '6px';
-    particle.style.height = '6px';
+    particle.style.width = '5px';
+    particle.style.height = '5px';
     particle.style.background = 'var(--accent-cyan)';
     particle.style.borderRadius = '50%';
     particle.style.pointerEvents = 'none';
-    particle.style.boxShadow = '0 0 10px var(--accent-cyan)';
+    particle.style.boxShadow = '0 0 8px var(--accent-cyan)';
     particle.style.zIndex = '10';
 
     var angle = Math.random() * Math.PI * 2;
-    var speed = Math.random() * 4 + 2;
+    var speed = Math.random() * 3 + 1;
     var vx = Math.cos(angle) * speed;
     var vy = Math.sin(angle) * speed;
 
@@ -308,7 +304,7 @@ function triggerCardBlast(e) {
       var life = 1;
       var anim = setInterval(function() {
         life -= 0.08;
-        p.style.transform = 'translate(' + (vxVal * (1 - life) * 20) + 'px, ' + (vyVal * (1 - life) * 20) + 'px) scale(' + life + ')';
+        p.style.transform = 'translate(' + (vxVal * (1 - life) * 15) + 'px, ' + (vyVal * (1 - life) * 15) + 'px) scale(' + life + ')';
         p.style.opacity = life;
 
         if (life <= 0) {
@@ -320,117 +316,52 @@ function triggerCardBlast(e) {
   }
 }
 
-function playSmokeExplosionSound() {
-  try {
-    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    var bufferSize = audioCtx.sampleRate * 2.5;
-    var buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    var data = buffer.getChannelData(0);
-    for (var i = 0; i < bufferSize; i++) {
-      data[i] = Math.random() * 2 - 1;
-    }
-
-    var noise = audioCtx.createBufferSource();
-    noise.buffer = buffer;
-
-    var filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(300, audioCtx.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 2.0);
-
-    var gainNode = audioCtx.createGain();
-    gainNode.gain.setValueAtTime(0.8, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.4);
-
-    noise.connect(filter);
-    filter.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-
-    noise.start();
-    noise.stop(audioCtx.currentTime + 2.5);
-  } catch (e) {}
-}
-
-// 72-HOUR CONTINUOUS LOCK TIMER
-var LOCK_DURATION = 72 * 60 * 60; // 72 hours in seconds (259,200s)
-var unlockTimestamp = localStorage.getItem('cmtiers_unlock_time');
-
-if (!unlockTimestamp) {
-  unlockTimestamp = Date.now() + (LOCK_DURATION * 1000);
-  localStorage.setItem('cmtiers_unlock_time', unlockTimestamp);
-}
-
-function updateLockTimer() {
-  var now = Date.now();
-  var remainingMs = unlockTimestamp - now;
-  var totalSecs = Math.max(0, Math.floor(remainingMs / 1000));
-
-  var h = Math.floor(totalSecs / 3600);
-  var m = Math.floor((totalSecs % 3600) / 60);
-  var s = totalSecs % 60;
-
-  var hrsEl = document.getElementById('hrs');
-  var minsEl = document.getElementById('mins');
-  var secsEl = document.getElementById('secs');
-
-  if (hrsEl) hrsEl.innerText = String(h).padStart(2, '0');
-  if (minsEl) minsEl.innerText = String(m).padStart(2, '0');
-  if (secsEl) secsEl.innerText = String(s).padStart(2, '0');
-
-  if (totalSecs <= 0) {
-    var lock = document.getElementById('timer-lockscreen');
-    if (lock && !lock.classList.contains('unlocked')) {
-      lock.classList.add('unlocked');
-      document.body.classList.add('unlocked-scroll');
-      playSmokeExplosionSound();
-      triggerCornerSmoke();
-    }
-  }
-}
-
-setInterval(updateLockTimer, 1000);
-updateLockTimer();
-
-var openMenuBtn = document.getElementById('openMenuBtn');
-var closeMenuBtn = document.getElementById('closeMenuBtn');
+// HAMBURGER DRAWER CONTROLS
 var drawer = document.getElementById('drawer');
 var drawerOverlay = document.getElementById('drawerOverlay');
 
-function openDrawer() {
+function openDrawer() { 
   if (drawer && drawerOverlay) {
-    drawer.classList.add('active');
-    drawerOverlay.classList.add('active');
+    drawer.classList.add('active'); 
+    drawerOverlay.classList.add('active'); 
+    triggerCornerSmoke(); 
   }
 }
 
-function closeDrawer() {
+function closeDrawer() { 
   if (drawer && drawerOverlay) {
-    drawer.classList.remove('active');
-    drawerOverlay.classList.remove('active');
+    drawer.classList.remove('active'); 
+    drawerOverlay.classList.remove('active'); 
   }
 }
 
-function scrollToLeaderboard() {
-  closeDrawer();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function scrollToLeaderboard() { 
+  closeDrawer(); 
+  window.scrollTo({ top: 0, behavior: 'smooth' }); 
 }
+
+var openMenuBtn = document.getElementById('openMenuBtn');
+var closeMenuBtn = document.getElementById('closeMenuBtn');
 
 if (openMenuBtn) openMenuBtn.addEventListener('click', openDrawer);
 if (closeMenuBtn) closeMenuBtn.addEventListener('click', closeDrawer);
 if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
 
-function openModal(id) {
-  closeDrawer();
+function openModal(id) { 
+  closeDrawer(); 
   var m = document.getElementById(id);
-  if (m) m.classList.add('active');
+  if (m) {
+    m.classList.add('active'); 
+    triggerCornerSmoke(); 
+  }
 }
 
-function closeModal(id) {
+function closeModal(id) { 
   var m = document.getElementById(id);
-  if (m) m.classList.remove('active');
+  if (m) m.classList.remove('active'); 
 }
 
-// THEME TOGGLE LOGIC
+// THEME TOGGLE
 var themeBtn = document.getElementById('themeToggleBtn');
 var isDark = localStorage.getItem('theme') !== 'light';
 
@@ -453,11 +384,11 @@ if (themeBtn) {
 }
 applyTheme();
 
-// BACKGROUND PARTICLE CANVAS
+// FULL BACKGROUND PARTICLE CANVAS
 var canvas = document.getElementById('bg-canvas');
 if (canvas) {
   var ctx = canvas.getContext('2d');
-  var mouse = { x: null, y: null, radius: 150 };
+  var mouse = { x: null, y: null, radius: 120 };
 
   function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -470,12 +401,12 @@ if (canvas) {
   });
   resizeCanvas();
 
-  var particles = Array.from({ length: 70 }, function() {
+  var particles = Array.from({ length: 40 }, function() {
     return {
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.7,
-      vy: (Math.random() - 0.5) * 0.7,
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: (Math.random() - 0.5) * 0.6,
       size: Math.random() * 2 + 0.5
     };
   });
@@ -493,31 +424,19 @@ if (canvas) {
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = isDark ? getComputedStyle(document.body).getPropertyValue('--accent-cyan') : '#0284c7';
+      ctx.fillStyle = isDark ? 'rgba(0, 242, 254, 0.7)' : 'rgba(2, 132, 199, 0.7)';
       ctx.fill();
-
-      if (mouse.x && mouse.y) {
-        var mDist = Math.hypot(p.x - mouse.x, p.y - mouse.y);
-        if (mDist < mouse.radius) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = 'rgba(0, 242, 254, ' + (1 - mDist / mouse.radius) + ')';
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
-        }
-      }
 
       for (var j = i + 1; j < particles.length; j++) {
         var p2 = particles[j];
         var dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-        if (dist < 130) {
+        if (dist < 110) {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p2.x, p2.y);
           ctx.strokeStyle = isDark 
-            ? 'rgba(0, 242, 254, ' + (1 - dist / 130) + ')' 
-            : 'rgba(2, 132, 199, ' + (1 - dist / 130) + ')';
+            ? 'rgba(0, 242, 254, ' + ((1 - dist / 110) * 0.35) + ')' 
+            : 'rgba(2, 132, 199, ' + ((1 - dist / 110) * 0.35) + ')';
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }
@@ -539,23 +458,21 @@ function triggerCornerSmoke() {
 
   var smokeParticles = [];
   var corners = [
-    { x: 0, y: 0, vxMin: 2, vxMax: 7, vyMin: 2, vyMax: 7 },
-    { x: smokeCanvas.width, y: 0, vxMin: -7, vxMax: -2, vyMin: 2, vyMax: 7 },
-    { x: 0, y: smokeCanvas.height, vxMin: 2, vxMax: 7, vyMin: -7, vyMax: -2 },
-    { x: smokeCanvas.width, y: smokeCanvas.height, vxMin: -7, vxMax: -2, vyMin: -7, vyMax: -2 }
+    { x: 0, y: 0, vxMin: 2, vxMax: 6, vyMin: 2, vyMax: 6 },
+    { x: smokeCanvas.width, y: 0, vxMin: -6, vxMax: -2, vyMin: 2, vyMax: 6 }
   ];
 
   corners.forEach(function(c) {
-    for (var i = 0; i < 110; i++) {
+    for (var i = 0; i < 50; i++) {
       smokeParticles.push({
         x: c.x,
         y: c.y,
-        vx: (Math.random() * (c.vxMax - c.vxMin) + c.vxMin) * (Math.random() * 1.5 + 0.5),
-        vy: (Math.random() * (c.vyMax - c.vyMin) + c.vyMin) * (Math.random() * 1.5 + 0.5),
-        radius: Math.random() * 45 + 25,
-        alpha: Math.random() * 0.7 + 0.3,
-        grow: Math.random() * 0.9 + 0.5,
-        color: Math.random() > 0.4 ? '220, 225, 230' : '160, 170, 185'
+        vx: (Math.random() * (c.vxMax - c.vxMin) + c.vxMin),
+        vy: (Math.random() * (c.vyMax - c.vyMin) + c.vyMin),
+        radius: Math.random() * 35 + 15,
+        alpha: Math.random() * 0.5 + 0.2,
+        grow: Math.random() * 0.6 + 0.3,
+        color: isDark ? '220, 225, 230' : '80, 90, 100'
       });
     }
   });
@@ -569,13 +486,12 @@ function triggerCornerSmoke() {
       p.x += p.vx;
       p.y += p.vy;
       p.radius += p.grow;
-      p.alpha -= 0.005;
+      p.alpha -= 0.008;
 
       if (p.alpha > 0) {
         sCtx.beginPath();
         var grad = sCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
         grad.addColorStop(0, 'rgba(' + p.color + ', ' + p.alpha + ')');
-        grad.addColorStop(0.6, 'rgba(' + p.color + ', ' + (p.alpha * 0.5) + ')');
         grad.addColorStop(1, 'rgba(' + p.color + ', 0)');
         sCtx.fillStyle = grad;
         sCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
@@ -583,7 +499,7 @@ function triggerCornerSmoke() {
       }
     });
 
-    if (elapsed < 3800) {
+    if (elapsed < 2000) {
       requestAnimationFrame(animateSmoke);
     } else {
       sCtx.clearRect(0, 0, smokeCanvas.width, smokeCanvas.height);
@@ -593,9 +509,79 @@ function triggerCornerSmoke() {
   animateSmoke();
 }
 
-if (q) {
-  q.addEventListener("input", render);
+// MULTI-LANGUAGE TRANSLATION DICTIONARY
+var TRANSLATIONS = {
+  en: {
+    title: "Ranked PvP tier list",
+    search: "Search players",
+    offline: "SERVER IS CURRENTLY OFFLINE",
+    offlineSub: "Leaderboard data sync is paused until the PocketMine server goes live.",
+    rankedPlayers: "Ranked Players",
+    peakElo: "Peak ELO"
+  },
+  fr: {
+    title: "Classement PvP par niveaux",
+    search: "Rechercher des joueurs",
+    offline: "SERVEUR ACTUELLEMENT HORS LIGNE",
+    offlineSub: "La synchronisation est suspendue jusqu'à ce que le serveur PocketMine soit en ligne.",
+    rankedPlayers: "Joueurs Classés",
+    peakElo: "ELO Maximum"
+  },
+  es: {
+    title: "Tabla de clasificación PvP",
+    search: "Buscar jugadores",
+    offline: "SERVIDOR DESCONECTADO",
+    offlineSub: "La sincronización de datos está pausada hasta que el servidor esté en línea.",
+    rankedPlayers: "Jugadores Clasificados",
+    peakElo: "Puntuación Máxima ELO"
+  },
+  pt: {
+    title: "Lista de Níveis PvP",
+    search: "Buscar jogadores",
+    offline: "SERVIDOR OFFLINE",
+    offlineSub: "Sincronização de dados pausada até o servidor ficar online.",
+    rankedPlayers: "Jogadores Rankeados",
+    peakElo: "ELO Máximo"
+  },
+  ru: {
+    title: "Рейтинговый список PvP",
+    search: "Поиск игроков",
+    offline: "СЕРВЕР ОФФЛАЙН",
+    offlineSub: "Синхронизация данных приостановлена до запуска сервера.",
+    rankedPlayers: "Рейтинговые игроки",
+    peakElo: "Пиковый ELO"
+  },
+  ja: {
+    title: "PvP ティアリスト",
+    search: "プレイヤーを検索",
+    offline: "サーバーオフライン",
+    offlineSub: "サーバーがオンラインになるまでデータ同期は停止中です。",
+    rankedPlayers: "ランク付けされたプレイヤー",
+    peakElo: "最高 ELO"
+  }
+};
+
+function translateSite(langKey) {
+  var lang = TRANSLATIONS[langKey] || TRANSLATIONS.en;
+
+  var subHeader = document.querySelector('.header-wrap p');
+  if (subHeader) subHeader.innerText = lang.title;
+
+  var searchInput = document.getElementById('q');
+  if (searchInput) searchInput.placeholder = lang.search;
+
+  var offlineTitle = document.querySelector('.offline-text h3');
+  if (offlineTitle) offlineTitle.innerText = lang.offline;
+
+  var offlineSub = document.querySelector('.offline-text p');
+  if (offlineSub) offlineSub.innerText = lang.offlineSub;
+
+  var statBadgeLabels = document.querySelectorAll('.stat-badge-lbl');
+  if (statBadgeLabels[0]) statBadgeLabels[0].innerText = lang.rankedPlayers;
+  if (statBadgeLabels[1]) statBadgeLabels[1].innerText = lang.peakElo;
 }
+
+if (q) q.addEventListener("input", render);
 
 render();
 load();
