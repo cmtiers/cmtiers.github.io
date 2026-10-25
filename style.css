@@ -80,9 +80,46 @@ body {
   pointer-events: none;
 }
 
-.band, .modal-box, .offline-banner {
+.band, .modal-box {
   will-change: transform, opacity;
   transform: translateZ(0);
+}
+
+/* TOAST NOTIFICATION STYLING */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast-message {
+  background: linear-gradient(135deg, #181c24, #0b0e13);
+  border: 1px solid var(--accent-cyan);
+  color: var(--text);
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  box-shadow: 0 0 25px var(--glow-cyan);
+  animation: toastPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: auto;
+}
+
+@keyframes toastPop {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes toastFade {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-10px); opacity: 0; }
 }
 
 /* NAVBAR LANGUAGE SELECTOR */
@@ -103,40 +140,6 @@ body {
   background: var(--modal-bg);
   color: var(--text);
 }
-
-/* OFFLINE STATUS BADGE & BANNER */
-.offline-badge {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #ef4444;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 900;
-  padding: 6px 10px;
-  border-radius: 8px;
-  letter-spacing: 1px;
-}
-
-.offline-banner {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(20, 23, 28, 0.85));
-  border: 1px dashed rgba(239, 68, 68, 0.5);
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 1.25rem;
-  backdrop-filter: blur(8px);
-}
-
-.offline-icon { font-size: 1.5rem; }
-.offline-text h3 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.95rem;
-  color: #ef4444;
-  margin-bottom: 2px;
-}
-.offline-text p { font-size: 0.85rem; color: var(--muted); }
 
 /* NAVBAR */
 .navbar {
@@ -288,7 +291,7 @@ body {
   gap: 12px;
 }
 
-.drawer-nav a.discord-btn {
+.drawer-nav button.discord-btn {
   margin-top: 10px;
   background: linear-gradient(135deg, #5865f2, #404fed);
   border: none;
@@ -362,9 +365,72 @@ header p {
   letter-spacing: 1px;
 }
 
+/* EXACT SCREENSHOT MATCH: SERVER STATUS BANNER BOX */
+.server-status-banner {
+  background: linear-gradient(180deg, rgba(20, 23, 28, 0.95) 0%, rgba(20, 23, 28, 0.75) 100%), rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  box-shadow: inset 0 0 20px rgba(239, 68, 68, 0.1), 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 1.25rem;
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.server-status-banner.is-online {
+  background: linear-gradient(180deg, rgba(20, 23, 28, 0.95) 0%, rgba(20, 23, 28, 0.75) 100%), rgba(52, 211, 153, 0.12);
+  border-color: rgba(52, 211, 153, 0.4);
+  box-shadow: inset 0 0 20px rgba(52, 211, 153, 0.1), 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.status-banner-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-indicator-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-indicator-dot.red-dot {
+  background-color: #ef4444;
+  box-shadow: 0 0 10px #ef4444;
+}
+
+.status-indicator-dot.green-dot {
+  background-color: #34d399;
+  box-shadow: 0 0 10px #34d399;
+}
+
+.server-status-banner h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ef4444;
+  letter-spacing: 1px;
+}
+
+.server-status-banner.is-online h2 {
+  color: #34d399;
+}
+
+.server-status-banner p {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+}
+
 input[type=search] {
   width: 100%; 
-  margin-bottom: 1rem; 
+  margin-bottom: .6rem; 
   padding: .7rem .9rem; 
   font: inherit;
   color: var(--text); 
@@ -377,6 +443,23 @@ input[type=search] {
 input[type=search]:focus-visible { 
   outline: 3px solid var(--accent-cyan); 
   outline-offset: 1px; 
+}
+
+/* LAST UPDATED BADGE */
+.last-updated-badge {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.last-updated-badge span#lastUpdatedTime {
+  color: var(--accent-cyan);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.78rem;
 }
 
 .band { 
